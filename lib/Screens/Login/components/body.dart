@@ -6,6 +6,7 @@ import 'package:classmanage/components/rounded_button.dart';
 import 'package:classmanage/components/rounded_input_field.dart';
 import 'package:classmanage/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../components/rounded_button.dart';
 import '../../Signup/components/or_divider.dart';
@@ -14,7 +15,10 @@ class Body extends StatelessWidget {
   const Body({
     Key key,
   }) : super(key: key);
+  final String _url="https://cas.upc.edu.cn/cas/login?service=https://saltedfish.fun/cas.php";
 
+  void _launchURL() async =>
+      await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -47,7 +51,8 @@ class Body extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.01),
             OrDivider(),
-            RoundedButton(color: Colors.black,press: () {},radius: 10,
+            RoundedButton(color: Colors.black,press: _launchURL,radius: 10,
+
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

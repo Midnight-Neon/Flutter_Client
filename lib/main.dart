@@ -1,5 +1,11 @@
+import 'dart:async';
+
 import 'package:classmanage/Screens/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:uni_links/uni_links.dart';
+
+import 'utils.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,13 +29,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: WelcomeScreen(),
+      home: MyHomePage(),
     );
   }
 }
+enum UniLinksType { string, uri }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -40,7 +46,6 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
   static final RouteObserver<PageRoute> routeObserver =
   RouteObserver<PageRoute>();
   @override
@@ -48,8 +53,49 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
+  final UniLinksType _type = UniLinksType.string;
+  StreamSubscription _sub;
+@override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    if (_sub != null) _sub.cancel();
+  }
+  Future<void> initPlatformState() async {
+    if (_type == UniLinksType.string) {
+      await initPlatformStateForStringUniLinks();
+    }
+  }
+  Future<void> initPlatformStateForStringUniLinks() async {
+    String initialLink;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      initialLink = await getInitialLink();
+      print('initial link: $initialLink');
+      if (initialLink != null) {
+        print('initialLink--$initialLink');
+        //  跳转到指定页面
+        schemeJump(context, initialLink);
+      }
+    } on PlatformException {
+      initialLink = 'Failed to get initial link.';
+    } on FormatException {
+      initialLink = 'Failed to parse the initial link as Uri.';
+    }
+    // Attach a listener to the links stream
+    _sub = getLinksStream().listen((String link) {
+      if (!mounted || link == null) return;
+      print('link--$link');
+      //  跳转到指定页面
+      schemeJump(context, link);
+    }, onError: (Object err) {
+      if (!mounted) return;
+    });
+  }
   void _incrementCounter() {
     Navigator.push(context, MaterialPageRoute(builder: (context)=>WelcomeScreen()));
   }
