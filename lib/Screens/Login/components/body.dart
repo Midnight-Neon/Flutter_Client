@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:classmanage/Screens/Login/components/background.dart';
-import 'package:classmanage/Screens/Signup/signup_screen.dart';
-import 'package:classmanage/components/already_have_an_account_acheck.dart';
 import 'package:classmanage/components/rounded_button.dart';
 import 'package:classmanage/components/rounded_input_field.dart';
 import 'package:classmanage/components/rounded_password_field.dart';

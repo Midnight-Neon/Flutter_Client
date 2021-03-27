@@ -1,10 +1,15 @@
 import 'dart:async';
 
+import 'package:classmanage/Screens/UserCenter.dart';
 import 'package:classmanage/Screens/Welcome/welcome_screen.dart';
+import 'package:classmanage/components/NavigatorItem.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 
+import 'Screens/Course/CourseItem.dart';
+import 'Screens/Course/CourseList.dart';
 import 'utils.dart';
 
 void main() {
@@ -33,10 +38,10 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 enum UniLinksType { string, uri }
 
 class MyHomePage extends StatefulWidget {
-
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -47,7 +52,9 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   static final RouteObserver<PageRoute> routeObserver =
-  RouteObserver<PageRoute>();
+      RouteObserver<PageRoute>();
+
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -55,21 +62,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final UniLinksType _type = UniLinksType.string;
   StreamSubscription _sub;
-@override
+  int _index=0;
+  @override
   void initState() {
     super.initState();
     initPlatformState();
   }
+
   @override
   void dispose() {
     super.dispose();
     if (_sub != null) _sub.cancel();
   }
+
   Future<void> initPlatformState() async {
     if (_type == UniLinksType.string) {
       await initPlatformStateForStringUniLinks();
     }
   }
+
   Future<void> initPlatformStateForStringUniLinks() async {
     String initialLink;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -96,8 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (!mounted) return;
     });
   }
+
   void _incrementCounter() {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>WelcomeScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
   }
 
   @override
@@ -109,16 +122,50 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Container()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: IndexedStack(
+          index: _index,
+          children: [
+            CourseBuilder(),
+            UserCenter()
+
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.black,
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: Icon(CupertinoIcons.qrcode_viewfinder),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.white,
+          shape: CircularNotchedRectangle(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              NavigatorItem(
+                text: "首页",
+                icon: Icons.home_outlined,
+                iconfill: Icons.home,
+                flag: _index==0,
+                ontap: ()=>{
+                  this.setState(() {
+                    _index=0;
+                  })
+                },
+              ),
+              NavigatorItem(
+                text: "个人",
+                icon: Icons.person_outline,
+                iconfill: Icons.person,
+                flag: _index==1,ontap: ()=>{
+              this.setState(() {
+              _index=1;
+              })}
+              ),
+            ],
+          ),
+        ) // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
 }

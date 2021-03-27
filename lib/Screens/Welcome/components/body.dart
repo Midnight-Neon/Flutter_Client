@@ -16,10 +16,10 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "WELCOME TO EDU",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            // Text(
+            //   "课堂管理系统",
+            //   style: TextStyle(fontWeight: FontWeight.bold),
+            // ),
             SizedBox(height: size.height * 0.05),
             SvgPicture.asset(
               "assets/icons/chat.svg",
@@ -27,7 +27,7 @@ class Body extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.05),
             RoundedButton(
-              text: "LOGIN",
+              text: "开 始",
               press: () {
                 Navigator.push(
                   context,
