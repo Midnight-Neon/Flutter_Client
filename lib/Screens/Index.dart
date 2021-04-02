@@ -1,4 +1,8 @@
+import 'package:classmanage/Screens/Asks/Asks.dart';
+import 'package:classmanage/Screens/Homework.dart';
 import 'package:classmanage/Screens/Notifications/Notification.dart';
+import 'package:classmanage/Screens/StuLists/StuLists.dart';
+import 'package:classmanage/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -156,7 +160,7 @@ class _ClassIndexState extends State<ClassIndex> {
 
         onTap: () => {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context){return NotificationSceen();}))
+                  builder: (context){return AskList();}))
             },
         child: Container(
           width: _size.width * .8,
@@ -164,12 +168,12 @@ class _ClassIndexState extends State<ClassIndex> {
           margin: EdgeInsets.all(5),
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
-              color: Color(0x8854C852),
+              color: SQColor.lightGray,
               spreadRadius: 1,
               blurRadius: 1,
-              offset: Offset(0, 0.1), // changes position of shadow
+              offset: Offset(0, 1), // changes position of shadow
             ),
-          ], color: Color(0x8854C852), borderRadius: BorderRadius.circular(10)),
+          ], color: SQColor.primary, borderRadius: BorderRadius.circular(10)),
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(

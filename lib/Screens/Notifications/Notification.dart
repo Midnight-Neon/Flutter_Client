@@ -79,7 +79,7 @@ class _NotificationState extends State<NotificationSceen> {
                           top: 5, left: 20, right: 20, bottom: 10),
                       child: Text(
                         "在App设计中状态栏纯色的这种设计很常见，但是如果状态栏需要为白色的时候就必须为黑色字体。在Android中已经有很多成熟的方案来处理这种情况，那我们现在看看在Flutter中这种情况该怎么处理。",
-                        style:TextStyle(fontWeight: FontWeight.w500),),
+                        style:TextStyle(fontWeight: FontWeight.w500,fontSize: 17),),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 20,right: 10,top: 5,bottom: 10),

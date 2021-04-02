@@ -18,7 +18,7 @@ class _UserCenterState extends State<UserCenter> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         padding: EdgeInsets.only(
-          top: 40,
+          top: 50,
           left: 5,
           right: 5,
         ),
