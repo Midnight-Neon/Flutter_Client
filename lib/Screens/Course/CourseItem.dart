@@ -20,8 +20,6 @@ class CourseItem extends StatelessWidget {
         child: GestureDetector(onTap: ()=>{
           Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ClassIndex()))
         },child:Container(
-
-
           height: 130,
           padding: EdgeInsets.only(left: 30, right: 10, top: 10, bottom: 10),
           width: double.infinity,
