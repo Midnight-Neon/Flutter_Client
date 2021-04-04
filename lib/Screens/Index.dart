@@ -160,7 +160,7 @@ class _ClassIndexState extends State<ClassIndex> {
 
         onTap: () => {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context){return AskList();}))
+                  builder: (context){return HomeworkScreen();}))
             },
         child: Container(
           width: _size.width * .8,
