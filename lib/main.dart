@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:classmanage/Screens/Checkin/CheckinFace.dart';
+import 'package:classmanage/Screens/CodeScan.dart';
 import 'package:classmanage/Screens/UserCenter.dart';
 import 'package:classmanage/Screens/Welcome/welcome_screen.dart';
 import 'package:classmanage/components/NavigatorItem.dart';
@@ -118,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+        context, MaterialPageRoute(builder: (context) => CheckinFace()));
   }
 
   @override
@@ -139,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
+
           backgroundColor: Colors.black,
           onPressed: _incrementCounter,
           tooltip: 'Increment',

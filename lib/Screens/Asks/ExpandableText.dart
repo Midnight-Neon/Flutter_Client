@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ExpandableText extends StatefulWidget {
@@ -36,16 +37,16 @@ class _ExpandableTextState extends State<ExpandableText> {
       tp.layout(maxWidth: size.maxWidth);
 
       if (tp.didExceedMaxLines) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        return Stack(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             expand ?
-            Text(text ?? '', style: style) :
-            Text(text ?? '', maxLines: maxLines,
+            Container(child:Text(text ?? '', style: style),padding: EdgeInsets.only(bottom: 15), width: double.maxFinite,):
+      Container(child:Text(text ?? '', maxLines: maxLines,
                 overflow: TextOverflow.ellipsis,
-                style: style),
+                style: style),width: double.maxFinite,),
 
-            GestureDetector(
+            Positioned(child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 setState(() {
@@ -53,14 +54,22 @@ class _ExpandableTextState extends State<ExpandableText> {
                 });
               },
               child: Container(
-                padding: EdgeInsets.only(top: 1.0,bottom: 5.0),
-                child: Row(
-                  children: [ Spacer(),Text(expand ? '收起' : '全文', style: TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.grey))]
-                )
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.white.withOpacity(0.2),Colors.white.withOpacity(0.7),Colors.white ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      )),
+                height: 60,
+                  padding: EdgeInsets.only(top: 30.0,bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                      children: [ Text(expand ? '收起' : '展开阅读', style: TextStyle(
+                          fontSize: 15.0,
+                          color: Color(0xf8175199))),Icon(expand ?Icons.keyboard_arrow_up_rounded:Icons.keyboard_arrow_down,size: 25,color:Color(0xf8175199) ,)]
+                  )
               ),
-            ),
+            ),right: 0,left: 0,bottom: 0,)
           ],
         );
       } else {

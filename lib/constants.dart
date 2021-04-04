@@ -15,3 +15,7 @@ class SQColor {
   static Color blue = Color(0xFF3688FF);
   static Color golden = Color(0xff8B7961);
 }
+class MyColors {
+  static const Color primaryColor = Color(0xFF503E9D);
+  static const Color primaryColorLight = Color(0xFF6252A7);
+}
