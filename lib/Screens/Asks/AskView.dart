@@ -20,7 +20,6 @@ class OneAsk {
   String askper;
   String askthing;
   bool isTeacher;
-
   OneAsk(this.index, this.head, this.askper, this.askthing, this.isTeacher);
 }
 
@@ -48,6 +47,7 @@ class _AskViewState extends State<AskView> {
     print(" 初始化");
     //监听滚动事件，打印滚动位置
     _controller.addListener(() {
+      print("监听开始");
       // print(_controller.offset); //打印滚动位置
       if (_controller.offset < 60 && showToTopBtn) {
         setState(() {
@@ -160,7 +160,7 @@ class _AskViewState extends State<AskView> {
       body: ScrollConfiguration(
           behavior: OverScrollBehavior(),
           child: ListView(
-            // controller: _controller,
+            controller: _controller,
             // mainAxisSize: MainAxisSize.max,
             children: [
               Container(
@@ -177,7 +177,32 @@ class _AskViewState extends State<AskView> {
                             height: 1.2,
                             // decorationStyle: TextDecorationStyle.dashed
                           )),
-                      SizedBox(height: 15),
+                      SizedBox(height: 5),
+                      Container(
+                        padding: EdgeInsets.only(right: 15.0),
+                        child: Row(
+                            children: [
+                              Spacer(),
+                              Transform.scale(
+                                  scale: 0.8,
+                                  child: Tag(
+                                    text: "Lv.1",
+                                    color1: SQColor.golden,
+                                    image: SvgPicture.asset(
+                                      "assets/icons/model.svg",
+                                      width: 13,
+                                      height: 13,
+                                    ),
+                                  )),
+                              Text("李翔",
+                                  style: TextStyle(
+                                      fontSize: 13.0,
+                                      color: Colors.black38
+                                  )),
+                            ]
+                        ),
+                      ),
+                      SizedBox(height: 5),
                       ExpandableText(
                           text: ques,
                           maxLines: 5,
@@ -254,11 +279,7 @@ class _AskViewState extends State<AskView> {
       floatingActionButton: FloatingActionButton(
           child: Icon(CupertinoIcons.ellipses_bubble_fill),
           backgroundColor: Colors.black,
-          onPressed: () {
-            //返回到顶部时执行动画
-            _controller.animateTo(.0,
-                duration: Duration(milliseconds: 200), curve: Curves.ease);
-          }),
+         ),
     );
   }
 
@@ -290,27 +311,7 @@ class _AskViewState extends State<AskView> {
         ]));
   }
 
-  Widget buildTag(String text, Color color) {
-    return Container(
-        margin: EdgeInsets.only(right: 5),
-        padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-        decoration: BoxDecoration(
-          color: Color.fromARGB(80, color.red, color.green, color.blue),
-          border: Border.all(
-              color: Color.fromARGB(80, color.red, color.green, color.blue),
-              width: 0),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Row(children: [
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-            ),
-          ),
-        ]));
-  }
+
 }
 
 class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
