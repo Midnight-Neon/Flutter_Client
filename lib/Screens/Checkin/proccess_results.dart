@@ -1,5 +1,7 @@
  import 'dart:math';
 
+import 'package:scidart/numdart.dart';
+
 import 'anchors.dart';
 import 'detection.dart';
 import 'options_face.dart';

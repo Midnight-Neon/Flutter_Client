@@ -1,3 +1,5 @@
+import 'package:scidart/numdart.dart';
+
 import 'detection.dart';
 
 List<Detection> origNms(List<Detection> detections, double threshold) {
