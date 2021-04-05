@@ -1,3 +1,6 @@
 [submodule "lib/markdown_widget/flutter_svg"]
 	path = lib/markdown_widget/flutter_svg
 	url = https://github.com/Midnight-Neon/flutter_svg
+[submodule "lib/tflite_flutter_helper"]
+	path = lib/tflite_flutter_helper
+	url = https://github.com/Midnight-Neon/tflite_flutter_helper
