@@ -1,4 +1,5 @@
 import 'package:classmanage/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -36,6 +37,126 @@ class HomeworkScreen extends StatefulWidget {
 }
 
 class _HomeworkScreenState extends State<HomeworkScreen> {
+  int Wb_Select = 0;
+  List<String> select_list = [];
+  bool ischoseque = true;
+  Widget options(ScrollController sc) {
+    return Container(
+        //color: Colors.black12,
+        child: ListView(
+      controller: sc,
+      children: <Widget>[
+        SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 30,
+              height: 5,
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 18.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "选项",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Container(
+            padding: EdgeInsets.only(left: 5.0, top: 5.0),
+            child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: select_list.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(6, 15, 6, 15),
+                        child: Row(
+                          children: [
+                            Container(
+                                padding: EdgeInsets.fromLTRB(12, 8, 0, 8),
+                                child:
+                                    // new Container(
+                                    //   width: 20.0,
+                                    //   height: 20.0,
+                                    //   decoration: BoxDecoration(
+                                    //     shape: BoxShape.circle,
+                                    //     color:Colors.black
+                                    //   ),
+                                    //   child: Container(
+                                    //     padding: EdgeInsets.fromLTRB(5.5, 2, 0, 0),
+                                    //       child:Text(String.fromCharCode(index+65),style:TextStyle(
+                                    //     color:Colors.white
+                                    //   )))
+                                    // )
+                                    Stack(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.checkmark_seal_fill,
+                                      size: 24.0,
+                                    ),
+                                    Icon(Icons.circle),
+                                    Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(7.5, 3.5, 0, 0),
+                                        child: Text(
+                                            String.fromCharCode(index + 65),
+                                            style:
+                                                TextStyle(color: Colors.white)))
+                                  ],
+                                )),
+                            Expanded(
+                                child: Container(
+                              padding: EdgeInsets.fromLTRB(30, 0, 10, 0),
+                              child: Text(
+                                select_list[index],
+                                style: TextStyle(fontSize: 13.0),
+                              ),
+                            )),
+                            Container(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: (Wb_Select == index)
+                                    ? Icon(Icons.check_circle_rounded)
+                                    : SizedBox(width: 28.0))
+                          ],
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        Wb_Select = index;
+                      });
+                      print(index);
+                    },
+                  );
+                }))
+      ],
+    )
+    );
+  }
+
   String data = """
   
 
@@ -120,15 +241,15 @@ int main()
 
 
 """;
-  ThemeData get currentTheme => Theme.of(context) ;
-  Size  _size;
+  ThemeData get currentTheme => Theme.of(context);
+  Size _size;
   final TocController controller = TocController();
   final TextEditingController _publicController = TextEditingController();
   double _panelHeightOpen;
   double _panelHeightClosed = 95.0;
-  bool isinPerson=false;
-  List<AssetEntity> assets=[];
-  var isDisplayingDetail=true;
+  bool isinPerson = false;
+  List<AssetEntity> assets = [];
+  var isDisplayingDetail = true;
   void removeAsset(int index) {
     setState(() {
       assets.removeAt(index);
@@ -137,7 +258,7 @@ int main()
       }
     });
   }
-  
+
   Widget _selectedAssetDeleteButton(int index) {
     return GestureDetector(
       onTap: () => removeAsset(index),
@@ -160,20 +281,20 @@ int main()
     return GestureDetector(
       onTap: isDisplayingDetail
           ? () async {
-        final List<AssetEntity> result =
-        await AssetPickerViewer.pushToViewer(
-          context,
-          currentIndex: index,
-          previewAssets: assets,
-          themeData: AssetPicker.themeData(Color(0xff00bc56)),
-        );
-        if (result != null && result != assets) {
-          assets = List<AssetEntity>.from(result);
-          if (mounted) {
-            setState(() {});
-          }
-        }
-      }
+              final List<AssetEntity> result =
+                  await AssetPickerViewer.pushToViewer(
+                context,
+                currentIndex: index,
+                previewAssets: assets,
+                themeData: AssetPicker.themeData(Color(0xff00bc56)),
+              );
+              if (result != null && result != assets) {
+                assets = List<AssetEntity>.from(result);
+                if (mounted) {
+                  setState(() {});
+                }
+              }
+            }
           : null,
       child: RepaintBoundary(
         child: ClipRRect(
@@ -191,222 +312,257 @@ int main()
     return MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: ListView(controller: sc, children: <Widget>[
-          SizedBox(
-            height: 12.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 30,
-                height: 5,
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 18.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "作答区",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.0,
+        child: !ischoseque
+            ? ListView(controller: sc, children: <Widget>[
+                SizedBox(
+                  height: 12.0,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
-          Card(
-              color: SQColor.lightGray,
-
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              elevation: 0,
-              margin: EdgeInsets.all(20),
-              child:GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: (){
-                    setState(() {
-                      isinPerson=!this.isinPerson;
-                    });
-                  },
-                  child: Container(
-                height: 60,
-                padding:
-                    EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.person_pin_outlined,
-                      size: 26,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 30,
+                      height: 5,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.0))),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      "线下提交",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
-                    ),
-                    Spacer(),
-                    isinPerson?Icon(Icons.check):Container()
                   ],
                 ),
-              ))),
-          Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child:isinPerson?Container(): Column(children:[TextField(
-                maxLines: 8,
-                minLines: 8,
-
-                style: TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-
-                    //去掉输入框的下滑线
-                    fillColor: SQColor.lightGray,
-                    filled: true,
-
-                    hintText: "输入文字答题...",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 16.0),
-                    contentPadding: EdgeInsets.all(10.0),
-                    enabledBorder: null,
-                    disabledBorder: null),
-                controller: _publicController,
-              ),
-                assets.length==0?Container():Container(
-                    height:120,child:ListView.builder(
-                    shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: assets.length,
-                  itemBuilder: (BuildContext _, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 16.0,
+                SizedBox(
+                  height: 18.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "作答区",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
                       ),
-                      child: AspectRatio(
-                        aspectRatio: 1.0,
-                        child: Stack(
-                          children: <Widget>[
-                            Positioned.fill(child: _selectedAssetWidget(index)),
-                            AnimatedPositioned(
-                              duration: kThemeAnimationDuration,
-                              top: isDisplayingDetail ? 6.0 : -30.0,
-                              right: isDisplayingDetail ? 6.0 : -30.0,
-                              child: _selectedAssetDeleteButton(index),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )),
-
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
                 Card(
                     color: SQColor.lightGray,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     elevation: 0,
-                    margin: EdgeInsets.only(top: 10),
+                    margin: EdgeInsets.all(20),
                     child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () async {
-                       var assrts= await AssetPicker.pickAssets(context,selectedAssets:assets,requestType: RequestType.image,);
-                      if (assrts==null) return;
-                       setState(() {
-                        assets=assrts;
-                      });
-                      },
-                      child: Container(
-                        height: 60,
-                        padding:
-                        EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          setState(() {
+                            isinPerson = !this.isinPerson;
+                          });
+                        },
+                        child: Container(
+                          height: 60,
+                          padding: EdgeInsets.only(
+                              left: 30, right: 30, top: 5, bottom: 5),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.person_pin_outlined,
+                                size: 26,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "线下提交",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Spacer(),
+                              isinPerson ? Icon(Icons.check) : Container()
+                            ],
+                          ),
+                        ))),
+                Container(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: isinPerson
+                        ? Container()
+                        : Column(children: [
+                            TextField(
+                              maxLines: 8,
+                              minLines: 8,
+                              style: TextStyle(fontSize: 16),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+
+                                  //去掉输入框的下滑线
+                                  fillColor: SQColor.lightGray,
+                                  filled: true,
+                                  hintText: "输入文字答题...",
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 16.0),
+                                  contentPadding: EdgeInsets.all(10.0),
+                                  enabledBorder: null,
+                                  disabledBorder: null),
+                              controller: _publicController,
+                            ),
+                            assets.length == 0
+                                ? Container()
+                                : Container(
+                                    height: 120,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: assets.length,
+                                      itemBuilder: (BuildContext _, int index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0,
+                                            vertical: 16.0,
+                                          ),
+                                          child: AspectRatio(
+                                            aspectRatio: 1.0,
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Positioned.fill(
+                                                    child: _selectedAssetWidget(
+                                                        index)),
+                                                AnimatedPositioned(
+                                                  duration:
+                                                      kThemeAnimationDuration,
+                                                  top: isDisplayingDetail
+                                                      ? 6.0
+                                                      : -30.0,
+                                                  right: isDisplayingDetail
+                                                      ? 6.0
+                                                      : -30.0,
+                                                  child:
+                                                      _selectedAssetDeleteButton(
+                                                          index),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    )),
+                            Card(
+                                color: SQColor.lightGray,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                elevation: 0,
+                                margin: EdgeInsets.only(top: 10),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () async {
+                                    var assrts = await AssetPicker.pickAssets(
+                                      context,
+                                      selectedAssets: assets,
+                                      requestType: RequestType.image,
+                                    );
+                                    if (assrts == null) return;
+                                    setState(() {
+                                      assets = assrts;
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    padding: EdgeInsets.only(
+                                        left: 30, right: 30, top: 5, bottom: 5),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.photo,
+                                          size: 26,
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          "添加图片",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Icon(
+                                          Icons.chevron_right,
+                                          color: Colors.black87,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )),
+                          ])),
+                Container(
+                    margin: EdgeInsets.all(20),
+                    child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith((states) {
+                              //设置按下时的背景颜色
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.white;
+                              }
+                              //默认不使用背景颜色
+                              return Colors.black;
+                            }),
+                            foregroundColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                                if (states.contains(MaterialState.focused) &&
+                                    !states.contains(MaterialState.pressed)) {
+                                  //获取焦点时的颜色
+                                  return Colors.black;
+                                } else if (states
+                                    .contains(MaterialState.pressed)) {
+                                  //按下时的颜色
+                                  return Colors.black;
+                                }
+                                //默认状态使用灰色
+                                return Colors.white;
+                              },
+                            ),
+                            overlayColor:
+                                MaterialStateProperty.all(Colors.black45),
+                            padding:
+                                MaterialStateProperty.all(EdgeInsets.all(10))),
+                        onPressed: () {},
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.photo,
-                              size: 26,
+                              Icons.cloud_upload,
                             ),
                             SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
-                            Text(
-                              "添加图片",
-                              style:
-                              TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.chevron_right,
-                              color: Colors.black87,
-                            ),
+                            Text("提交")
                           ],
-                        ),
-                      ),
-                    )),
-              ])),
-          Container(
-              margin: EdgeInsets.all(20),
-              child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith((states) {
-                        //设置按下时的背景颜色
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.white;
-                        }
-                        //默认不使用背景颜色
-                        return Colors.black;
-                      }),
-                      foregroundColor: MaterialStateProperty.resolveWith(
-                        (states) {
-                          if (states.contains(MaterialState.focused) &&
-                              !states.contains(MaterialState.pressed)) {
-                            //获取焦点时的颜色
-                            return Colors.black;
-                          } else if (states.contains(MaterialState.pressed)) {
-                            //按下时的颜色
-                            return Colors.black;
-                          }
-                          //默认状态使用灰色
-                          return Colors.white;
-                        },
-                      ),
-                      overlayColor: MaterialStateProperty.all(Colors.black45),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(10))),
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.cloud_upload,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("提交")
-                    ],
-                  ))),
-
-        ]));
+                        ))),
+              ])
+            : options(sc));
   }
 
   @override
   Widget build(BuildContext context) {
+    select_list.clear();
+    select_list.add("选世界");
+    select_list.add("选桂言叶");
+    select_list.add("你们都是我的翅膀");
+    select_list.add("我是男酮");
+    select_list.add("告诉自己别睡了");
+    select_list.add(
+        "在这段时间里，我和你经历了很多，我看着你从当初那个懵懂无知的少女，变成了如今罗德岛的领导人，萨卡兹的王，但是我知道，凯尔希知道，所有干员都知道，你仍是那个温柔的小兔，无论你带上了什么样子面具，你都只能是你自己");
     _panelHeightOpen = MediaQuery.of(context).size.height * .80;
-    _size= MediaQuery.of(context).size;
+    _size = MediaQuery.of(context).size;
 
     return Scaffold(
         appBar: AppBar(

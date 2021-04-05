@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CheckinFace()));
+        context, MaterialPageRoute(builder: (context) => CodeScanner()));
   }
 
   @override

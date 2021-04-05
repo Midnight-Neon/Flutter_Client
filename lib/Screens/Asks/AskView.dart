@@ -24,9 +24,6 @@ class OneAsk {
 }
 
 class _AskViewState extends State<AskView> {
-  int Wb_Select = 0;
-  List<String> select_list=[];
-  bool ischoseque = true;
   ScrollController _controller = new ScrollController();
   bool showToTopBtn = false;
   List<OneAsk> asklist = [];
@@ -69,79 +66,6 @@ class _AskViewState extends State<AskView> {
     //为了避免内存泄露，需要调用_controller.dispose
     _controller.dispose();
     super.dispose();
-  }
-  Widget options()
-  {
-    return Container(
-      padding: EdgeInsets.only(left: 5.0, top: 5.0),
-      child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: select_list.length,
-          itemBuilder:(context, index){
-              return InkWell(
-                child:Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(6, 15, 6, 15),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(12, 8,0, 8),
-                        child:
-                        // new Container(
-                        //   width: 20.0,
-                        //   height: 20.0,
-                        //   decoration: BoxDecoration(
-                        //     shape: BoxShape.circle,
-                        //     color:Colors.black
-                        //   ),
-                        //   child: Container(
-                        //     padding: EdgeInsets.fromLTRB(5.5, 2, 0, 0),
-                        //       child:Text(String.fromCharCode(index+65),style:TextStyle(
-                        //     color:Colors.white
-                        //   )))
-                        // )
-                          Stack(
-                            children: [
-                              Icon(CupertinoIcons.checkmark_seal_fill,size: 24.0,),
-                              Icon(Icons.circle),
-                              Container(
-                                padding: EdgeInsets.fromLTRB(7.5, 3.5, 0, 0),
-                              child:Text(String.fromCharCode(index+65),style:TextStyle(
-                                   color:Colors.white
-                                 ))
-                              )
-                            ],
-                          )
-                        ),
-                        Expanded(
-                        child:Container(
-                          padding: EdgeInsets.fromLTRB(30, 0, 10, 0),
-                          child: Text(select_list[index],
-                          style: TextStyle(
-                            fontSize: 13.0
-                          ),),
-                        )),
-                        Container(
-                          padding: EdgeInsets.only(right: 10.0),
-                        child:(Wb_Select==index)?Icon(Icons.check_circle_rounded):SizedBox(width: 28.0)
-                        )
-                          ],
-                    ),
-                  ),
-                ) ,
-                onTap:(){
-                  setState(() {
-                    Wb_Select = index;
-                  });
-                  print(index);
-                },
-              );
-          }
-      )
-    );
   }
   Widget quelisttile(OneAsk oneAsk) {
     return Column(
@@ -190,13 +114,6 @@ class _AskViewState extends State<AskView> {
 
   @override
   Widget build(BuildContext context) {
-    select_list.clear();
-    select_list.add("选世界");
-    select_list.add("选桂言叶");
-    select_list.add("你们都是我的翅膀");
-    select_list.add("我是男酮");
-    select_list.add("告诉自己别睡了");
-    select_list.add("在这段时间里，我和你经历了很多，我看着你从当初那个懵懂无知的少女，变成了如今罗德岛的领导人，萨卡兹的王，但是我知道，凯尔希知道，所有干员都知道，你仍是那个温柔的小兔，无论你带上了什么样子面具，你都只能是你自己");
     asklist.clear();
     asklist.add(new OneAsk(
         0,
@@ -317,9 +234,7 @@ class _AskViewState extends State<AskView> {
                     ],
                   )),
               SizedBox(height: 5.0),
-              ischoseque?
-              options()
-                  :Container(
+              Container(
                 child: Column(
                   children: [
                     Container(
@@ -360,7 +275,7 @@ class _AskViewState extends State<AskView> {
           )),
       floatingActionButtonLocation: CustomFloatingActionButtonLocation(
           FloatingActionButtonLocation.endFloat, 0, -30),
-      floatingActionButton: ischoseque?Container():FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           child: Icon(CupertinoIcons.ellipses_bubble_fill),
           backgroundColor: Colors.black,
          ),

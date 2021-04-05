@@ -98,7 +98,14 @@ class _ClassIndexState extends State<ClassIndex> {
                               color: Color(0xf87367f0),
                               size: 40,
                             )),
-                        buildIcon("作业", svg: "form_fill"),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context){return HomeworkScreen();}))
+                      },
+                      child:
+                        buildIcon("作业", svg: "form_fill")),
                         buildIcon("问答", svg: "command_fill"),
                       ],
                     ))
@@ -158,7 +165,6 @@ class _ClassIndexState extends State<ClassIndex> {
   Widget buildEntry() {
     return GestureDetector(
         behavior: HitTestBehavior.opaque,
-
         onTap: () => {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context){return AskList();}))
