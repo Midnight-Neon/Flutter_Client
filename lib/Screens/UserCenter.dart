@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../constants.dart';
+
 class UserCenter extends StatefulWidget {
   @override
   _UserCenterState createState() => _UserCenterState();
@@ -92,7 +94,42 @@ class _UserCenterState extends State<UserCenter> {
                     )
                   ],
                 ),
-              ))
+              )),
+          Card(
+              color: SQColor.lightGray,
+
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              elevation: 0,
+              margin: EdgeInsets.all(10),
+              child:GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: (){
+
+                  },
+                  child: Container(
+                    height: 60,
+                    padding:
+                    EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
+                    child: Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.grid_circle_fill,
+                          size: 26,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "个人信息",
+                          style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
+                        ),
+                        Spacer(),
+                        Icon(Icons.chevron_right)
+                      ],
+                    ),
+                  ))),
         ]));
   }
 }

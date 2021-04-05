@@ -90,7 +90,7 @@ class _ClassIndexState extends State<ClassIndex> {
                       crossAxisCount: 3,
                       shrinkWrap: true,
                       children: [
-                        buildIcon("签到", svg: "time"),
+                        buildIcon("签到", svg: "checkin"),
                         buildIcon("信息", svg: "message"),
                         buildIcon("班级成员",
                             icon: Icon(
@@ -98,7 +98,8 @@ class _ClassIndexState extends State<ClassIndex> {
                               color: Color(0xf87367f0),
                               size: 40,
                             )),
-                        buildIcon("作业", svg: "document"),
+                        buildIcon("作业", svg: "form_fill"),
+                        buildIcon("问答", svg: "command_fill"),
                       ],
                     ))
               ],
@@ -160,7 +161,7 @@ class _ClassIndexState extends State<ClassIndex> {
 
         onTap: () => {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context){return HomeworkScreen();}))
+                  builder: (context){return AskList();}))
             },
         child: Container(
           width: _size.width * .8,
