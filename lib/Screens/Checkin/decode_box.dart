@@ -1,3 +1,10 @@
+import 'dart:math';
+
+import 'package:scidart/numdart.dart';
+
+import 'anchors.dart';
+import 'options_face.dart';
+
 Array decodeBox(
       List<double> rawBoxes, int i, List<Anchor> anchors, OptionsFace options) {
     Array boxData = Array(List<double>.generate(options.numCoords, (i) => 0.0));

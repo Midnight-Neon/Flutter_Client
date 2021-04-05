@@ -44,6 +44,9 @@ dependencies:
   numeric_keyboard: ^1.0.0
   camera: ^0.8.1
   tflite_flutter: ^0.6.0
+  tflite_flutter_helper:
+    path: lib/tflite_flutter_helper
+  scidart: ^0.0.1-dev.12
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -66,6 +69,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/models/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
