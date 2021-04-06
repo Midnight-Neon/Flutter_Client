@@ -1,4 +1,8 @@
+import 'package:classmanage/components/Tags.dart';
+import 'package:classmanage/model/contact.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 class CheckinRecord extends StatefulWidget {
@@ -18,14 +22,14 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
-
+  String monthday ;
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
 
     final _selectedDay = DateTime.now();
-
+    monthday = _selectedDay.month.toString()+"月"+_selectedDay.day.toString()+"日";
     _events = {
       _selectedDay.subtract(Duration(days: 30)): [
         'Event A0',
@@ -51,7 +55,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
         'Event C5'
       ],
       _selectedDay.subtract(Duration(days: 2)): ['Event A6', 'Event B6'],
-      _selectedDay: ['Event A7', 'Event B7', 'Event C7', 'Event D7'],
+      _selectedDay: ['东廊102', 'Event B7', 'Event C7', 'Event D7'],
       _selectedDay.add(Duration(days: 1)): [
         'Event A8',
         'Event B8',
@@ -101,6 +105,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
   void _onDaySelected(DateTime day, List events, List holidays) {
     print('CALLBACK: _onDaySelected');
     setState(() {
+      monthday=day.month.toString()+"月"+day.day.toString()+"日";
       _selectedEvents = events;
     });
   }
@@ -119,84 +124,132 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.all(10),
-                height: 80,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("缺勤次数",
-                              style: TextStyle(
-                                fontSize: 16,
-                              )),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text.rich(TextSpan(
-                              text: "0",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+            child: Container(
+                color: Color(0xfff8faf9),
+                child:
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Container(
+                        color: Colors.white,
+                        child:Column(children: [
+                          Container(
+                            margin: EdgeInsets.all(10),
+                            height: 80,
+                            child: Row(
                               children: [
-                                TextSpan(
-                                    text: "次",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ))
-                              ]))
-                        ],
-                      ),
-                      flex: 1,
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("出勤率",
-                              style: TextStyle(
-                                fontSize: 16,
-                              )),
-                          SizedBox(
-                            height: 5,
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text("缺勤次数",
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 12,
+                                          //  fontWeight: FontWeight.bold
+                                          )),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text.rich(TextSpan(
+                                          text: "0",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 24, fontWeight: FontWeight.bold),
+                                          children: [
+                                            TextSpan(
+                                                text: "次",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ))
+                                          ]))
+                                    ],
+                                  ),
+                                  flex: 1,
+                                ),
+                                VerticalDivider(
+                                  color: Colors.white,
+                                 // width: 2,
+                                  thickness: 2,
+                                  indent: 10,
+                                  endIndent: 10,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text("出勤率",
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 12,
+                                          )),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text.rich(TextSpan(
+                                          text: "20.00",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 24, fontWeight: FontWeight.bold),
+                                          children: [
+                                            TextSpan(
+                                                text: "%",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ))
+                                          ]))
+                                    ],
+                                  ),
+                                  flex: 1,
+                                ),
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(22),
+                                image:  new DecorationImage(
+                                image: new ExactAssetImage('assets/images/s2.png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          Text.rich(TextSpan(
-                              text: "20.00",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                              children: [
-                                TextSpan(
-                                    text: "%",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ))
-                              ]))
-                        ],
-                      ),
-                      flex: 1,
+                          Stack(
+                            children: [
+                              Divider(height:10.0,indent:15.0,endIndent:200.0,color: Colors.black45,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                  children:[Icon(Icons.star,size: 10.0)]
+                              ),
+                              Divider(height:10.0,indent:200.0,endIndent:15.0,color: Colors.black45,)
+                            ],
+                          ),
+
+                          _buildTableCalendarWithBuilders(),
+                        ])
                     ),
+                    // Switch out 2 lines below to play with TableCalendar's settings
+                    //-----------------------
+                    // _buildTableCalendar(),
+
+                    // const SizedBox(height: 8.0),
+                    // _buildButtons(),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                              padding: EdgeInsets.fromLTRB(10, 8, 0, 8),
+                              child:
+                              Text("签到记录"+" "+monthday,style: TextStyle(
+                                fontSize: 13.0,
+                                color: Colors.black26,
+                              )))]),
+                    //  const SizedBox(height: 8.0),
+                    Expanded(child: _buildEventList()),
                   ],
-                ),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.black.withOpacity(0.2)),
-              ),
-              // Switch out 2 lines below to play with TableCalendar's settings
-              //-----------------------
-              // _buildTableCalendar(),
-              _buildTableCalendarWithBuilders(),
-              // const SizedBox(height: 8.0),
-              // _buildButtons(),
-              const SizedBox(height: 8.0),
-              Expanded(child: _buildEventList()),
-            ],
-          ),
+                ))
         ));
   }
 
@@ -439,17 +492,73 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
       children: _selectedEvents
           .map((event) => Container(
         decoration: BoxDecoration(
-          border: Border.all(width: 0.8),
+          color: Colors.white,
+          // border: Border.all(width: 0.8),
           borderRadius: BorderRadius.circular(12.0),
         ),
         margin:
         const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        child: ListTile(
-          title: Text(event.toString()),
+        child:
+        InkWell(
+          child: Container(
+              padding: EdgeInsets.fromLTRB(12, 12, 8, 12),
+                child: Row(
+              children: [
+                Icon(Icons.circle,color: Colors.greenAccent,size: 12.0,),
+                SizedBox(width: 15.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(event.toString(),style: TextStyle(
+                      fontSize: 15.0,
+                    ),),
+                    SizedBox(height: 5.0),
+                    Text("PM-02:59",style: TextStyle(
+                      fontSize: 11.0,
+                      color: Colors.black45
+                    ),)
+                  ],
+                ),
+              //  SizedBox(width: 20.0),
+                Spacer(),
+                buildtag("人脸识别", Color(0xff43aedc), Icons.face)
+              ],
+            )),
           onTap: () => print('$event tapped!'),
         ),
+        // ListTile(
+        //   title: Text(event.toString()),
+        //   onTap: () => print('$event tapped!'),
+        // ),
       ))
           .toList(),
     );
+  }
+  Widget buildtag(String text, Color color, IconData icon) {
+    return Container(
+        margin: EdgeInsets.only(right: 5),
+        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+        decoration: BoxDecoration(
+          color: Color.fromARGB(99, color.red, color.green, color.blue),
+          border: Border.all(
+              color: Color.fromARGB(99, color.red, color.green, color.blue),
+              width: 0.5),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(children: [
+          Icon(
+            icon,
+            color: color,
+            size: 9,
+          ),
+          SizedBox(
+            width: 0.8,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+                fontSize: 8, color: color, fontWeight: FontWeight.bold),
+          ),
+        ]));
   }
 }
