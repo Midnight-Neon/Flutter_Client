@@ -68,7 +68,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "选项",
+              "作答区",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24.0,

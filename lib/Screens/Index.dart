@@ -1,6 +1,7 @@
 import 'package:classmanage/Screens/Asks/Asks.dart';
 import 'package:classmanage/Screens/Homework.dart';
 import 'package:classmanage/Screens/Notifications/Notification.dart';
+import 'package:classmanage/Screens/Records/Records.dart';
 import 'package:classmanage/Screens/StuLists/StuLists.dart';
 import 'package:classmanage/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,7 +91,15 @@ class _ClassIndexState extends State<ClassIndex> {
                       crossAxisCount: 3,
                       shrinkWrap: true,
                       children: [
-                        buildIcon("签到", svg: "checkin"),
+                        GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context){return CheckinRecord();}))
+                            },
+                            child:
+                            buildIcon("签到", icon: Image.asset("assets/icons/checkin.png",width: 40,height: 40,)),
+                        ),
                         buildIcon("信息", svg: "message"),
                         buildIcon("班级成员",
                             icon: Icon(
