@@ -1,6 +1,8 @@
+// @dart=2.9
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:classmanage/Screens/Checkin/CheckinFace.dart';
 import 'package:classmanage/Screens/CodeScan.dart';
 import 'package:classmanage/Screens/UserCenter.dart';
@@ -13,16 +15,26 @@ import 'package:uni_links/uni_links.dart';
 
 import 'Screens/Course/CourseItem.dart';
 import 'Screens/Course/CourseList.dart';
+import 'http.dart';
 import 'utils.dart';
+import 'package:leancloud_storage/leancloud.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Global.init().then((value) =>  runApp(MyApp()));
+
+
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,  //设置为透明
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+  LeanCloud.initialize(
+      'aeOmDTmS3ffFp58lwSdbf4qs-9Nh9j0Va', 'PPJz63PgkRHxILOfSnCtRon9',
+      server: 'https://aeomdtms.lc-cn-e1-shared.com',
+      queryCache: new LCQueryCache());
 }
 
 class MyApp extends StatelessWidget {
@@ -31,6 +43,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      builder: BotToastInit(), //1.调用BotToastInit
+      navigatorObservers: [BotToastNavigatorObserver()],
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -131,6 +145,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    if(Global.profile==null||Global.profile.accessToken==null){
+      return WelcomeScreen();
+    }
     return Scaffold(
         body: IndexedStack(
           index: _index,

@@ -1,3 +1,4 @@
+import 'package:classmanage/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -9,6 +10,17 @@ class CourseBuilder extends StatefulWidget {
 }
 
 class _CourseBuilderState extends State<CourseBuilder> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateCourses();
+
+  }
+  void updateCourses() async{
+     var resp=await Global.dio.get("/courses");
+     print(resp.data.toString());
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
