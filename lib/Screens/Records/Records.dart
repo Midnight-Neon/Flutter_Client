@@ -125,16 +125,11 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
     return Scaffold(
         body: SafeArea(
             child: Container(
-                color: Color(0xfff8faf9),
-                child:
-                Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Container(
-                        color: Colors.white,
-                        child:Column(children: [
-                          Container(
-                            margin: EdgeInsets.all(10),
+                            margin: EdgeInsets.fromLTRB(10, 50, 10, 10),
                             height: 80,
                             child: Row(
                               children: [
@@ -145,7 +140,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                     children: [
                                       Text("缺勤次数",
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
+                                            color: Colors.black45.withOpacity(0.8),
                                             fontSize: 12,
                                           //  fontWeight: FontWeight.bold
                                           )),
@@ -155,7 +150,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                       Text.rich(TextSpan(
                                           text: "0",
                                           style: TextStyle(
-                                              color: Colors.white,
+                                              color: Colors.black54,
                                               fontSize: 24, fontWeight: FontWeight.bold),
                                           children: [
                                             TextSpan(
@@ -170,7 +165,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                   flex: 1,
                                 ),
                                 VerticalDivider(
-                                  color: Colors.white,
+                                  color: Colors.black54,
                                  // width: 2,
                                   thickness: 2,
                                   indent: 10,
@@ -183,7 +178,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                     children: [
                                       Text("出勤率",
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
+                                            color: Colors.black45.withOpacity(0.8),
                                             fontSize: 12,
                                           )),
                                       SizedBox(
@@ -192,7 +187,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                       Text.rich(TextSpan(
                                           text: "20.00",
                                           style: TextStyle(
-                                              color: Colors.white,
+                                              color: Colors.black54,
                                               fontSize: 24, fontWeight: FontWeight.bold),
                                           children: [
                                             TextSpan(
@@ -209,26 +204,24 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                               ],
                             ),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22),
-                                image:  new DecorationImage(
-                                image: new ExactAssetImage('assets/images/s2.png'),
-                                fit: BoxFit.cover,
-                              ),
+                               color: Colors.white,
+                                borderRadius: BorderRadius.circular(22)
+                              //   image:  new DecorationImage(
+                              //   image: new ExactAssetImage('assets/images/s2.png'),
+                              //   fit: BoxFit.cover,
+                              // ),
                             ),
                           ),
-                          Stack(
-                            children: [
-                              Divider(height:10.0,indent:15.0,endIndent:200.0,color: Colors.black45,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                  children:[Icon(Icons.star,size: 10.0)]
-                              ),
-                              Divider(height:10.0,indent:200.0,endIndent:15.0,color: Colors.black45,)
-                            ],
-                          ),
+                    Container(
 
-                          _buildTableCalendarWithBuilders(),
-                        ])
+                      padding: EdgeInsets.only(top: 20),
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.all(Radius.circular(20.0)),),
+                        child: _buildTableCalendarWithBuilders(),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                        borderRadius:BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15))
+                      ),
                     ),
                     // Switch out 2 lines below to play with TableCalendar's settings
                     //-----------------------
@@ -236,6 +229,10 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
 
                     // const SizedBox(height: 8.0),
                     // _buildButtons(),
+                    SizedBox(height: 1),
+                    Container(
+                      color: Colors.white,
+                      child:
                     Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -245,39 +242,22 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                               Text("签到记录"+" "+monthday,style: TextStyle(
                                 fontSize: 13.0,
                                 color: Colors.black26,
-                              )))]),
+                              )))]),),
                     //  const SizedBox(height: 8.0),
-                    Expanded(child: _buildEventList()),
+                    Expanded(child: Container(
+                        color:Color(0xfff8faf9),
+                        child:_buildEventList())),
                   ],
-                ))
-        ));
-  }
+                ),
+              decoration: BoxDecoration(
+                image: new DecorationImage(
+                  image: new ExactAssetImage('assets/images/b2.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
 
-  // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-        TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
-    );
+        ));
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)
