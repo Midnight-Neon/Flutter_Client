@@ -6,6 +6,7 @@ import 'package:classmanage/constants.dart';
 import 'package:classmanage/model/CheckinRResp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,6 @@ class CheckinRecord extends StatefulWidget {
   @override
   _CheckinRecordState createState() => _CheckinRecordState();
 }
-
 final Map<DateTime, List> _holidays = {
   DateTime(2020, 1, 1): ['New Year\'s Day'],
   DateTime(2020, 1, 6): ['Epiphany'],
@@ -59,7 +59,7 @@ class _CheckinRecordState extends State<CheckinRecord>
       if(!isSign){
         absentNum++;
       }
-      
+
 
       if (_events[element.datetime * 1000] == null) {
         _events[datetime] = [
@@ -128,16 +128,11 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
     return Scaffold(
         body: SafeArea(
             child: Container(
-                color: Color(0xfff8faf9),
-                child:
-                _calendarController!=null?Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Container(
-                        color: Colors.white,
-                        child: Column(children: [
-                          Container(
-                            margin: EdgeInsets.all(10),
+                            margin: EdgeInsets.fromLTRB(10, 50, 10, 10),
                             height: 80,
                             child: Row(
                               children: [
@@ -149,9 +144,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                     children: [
                                       Text("缺勤次数",
                                           style: TextStyle(
-                                            color:
-                                                Colors.white.withOpacity(0.9),
-                                            fontSize: 12,
+                                            color: Colors.black45.withOpacity(0.8), fontSize: 12,
                                             //  fontWeight: FontWeight.bold
                                           )),
                                       SizedBox(
@@ -160,9 +153,8 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                       Text.rich(TextSpan(
                                           text: "${absentNum}",
                                           style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
+                                              color: Colors.black54,
+                                              fontSize: 24, fontWeight: FontWeight.bold),
                                           children: [
                                             TextSpan(
                                                 text: "次",
@@ -176,7 +168,8 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                   flex: 1,
                                 ),
                                 VerticalDivider(
-                                  color: Colors.white,
+                                  color: Colors.black54,
+                                 // width: 2,
                                   // width: 2,
                                   thickness: 2,
                                   indent: 10,
@@ -190,8 +183,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                     children: [
                                       Text("出勤率",
                                           style: TextStyle(
-                                            color:
-                                                Colors.white.withOpacity(0.9),
+                                            color: Colors.black45.withOpacity(0.8),
                                             fontSize: 12,
                                           )),
                                       SizedBox(
@@ -200,9 +192,8 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                       Text.rich(TextSpan(
                                           text: "${((1-(absentNum/allNum))*100).toStringAsFixed(2)}",
                                           style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
+                                              color: Colors.black54,
+                                              fontSize: 24, fontWeight: FontWeight.bold),
                                           children: [
                                             TextSpan(
                                                 text: "%",
@@ -218,81 +209,60 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                               ],
                             ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(22),
-                              image: new DecorationImage(
-                                image:
-                                    new ExactAssetImage('assets/images/s2.png'),
-                                fit: BoxFit.cover,
-                              ),
+                               color: Colors.white,
+                                borderRadius: BorderRadius.circular(22)
+                              //   image:  new DecorationImage(
+                              //   image: new ExactAssetImage('assets/images/s2.png'),
+                              //   fit: BoxFit.cover,
+                              // ),
                             ),
                           ),
-                          Stack(
-                            children: [
-                              Divider(
-                                height: 10.0,
-                                indent: 15.0,
-                                endIndent: 200.0,
-                                color: Colors.black45,
-                              ),
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Icon(Icons.star, size: 10.0)]),
-                              Divider(
-                                height: 10.0,
-                                indent: 200.0,
-                                endIndent: 15.0,
-                                color: Colors.black45,
-                              )
-                            ],
-                          ),
-                          _buildTableCalendarWithBuilders(),
-                        ])),
+                    Container(
+
+                      padding: EdgeInsets.only(top: 20),
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.all(Radius.circular(20.0)),),
+                        child: _buildTableCalendarWithBuilders(),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                        borderRadius:BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15))
+                      ),
+                    ),
                     // Switch out 2 lines below to play with TableCalendar's settings
                     //-----------------------
                     // _buildTableCalendar(),
 
                     // const SizedBox(height: 8.0),
                     // _buildButtons(),
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 8, 0, 8),
-                          child: Text("签到记录" + " " + monthday,
-                              style: TextStyle(
+                    SizedBox(height: 1),
+                    Container(
+                      color: Colors.white,
+                      child:
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                              padding: EdgeInsets.fromLTRB(10, 8, 0, 8),
+                              child:
+                              Text("签到记录"+" "+monthday,style: TextStyle(
                                 fontSize: 13.0,
                                 color: Colors.black26,
-                              )))
-                    ]),
+                              )))]),),
                     //  const SizedBox(height: 8.0),
-                    Expanded(child: _buildEventList()),
+                    Expanded(child: Container(
+                        color:Color(0xfff8faf9),
+                        child:_buildEventList())),
                   ],
-                ):Center(child: Circle2InsideScaleLoading(),))));
-  }
+                ),
+              decoration: BoxDecoration(
+                image: new DecorationImage(
+                  image: new ExactAssetImage('assets/images/b2.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
 
-  // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
-    );
+        ));
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)
