@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:classmanage/main.dart';
 import 'package:classmanage/model/profile.dart';
 import 'package:classmanage/utils.dart';
@@ -26,6 +27,7 @@ class Global {
   static SharedPreferences getprefs()=>_prefs;
   static Future init() async {
     _prefs = await SharedPreferences.getInstance();
+
 
     var _profile = _prefs.getString("profile");
     if (_profile != null) {
@@ -84,8 +86,10 @@ dio.clear();
 
         }
       ));
+    await initializeDateFormatting();
 
-}
+
+  }
 
 }
 // class CustomInterceptors extends Interceptor {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:classmanage/components/circle_2_inside_scale.dart';
@@ -6,6 +7,7 @@ import 'package:classmanage/constants.dart';
 import 'package:classmanage/model/CheckinRResp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -89,8 +91,9 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
   @override
   void initState() {
     super.initState();
-    initializeDateFormatting();
 
+    initializeDateFormatting();
+    print(DateFormat('EEE',"zh_CN").format(DateTime.now()));
     final _selectedDay = DateTime.now();
     monthday =
         _selectedDay.month.toString() + "月" + _selectedDay.day.toString() + "日";
@@ -125,9 +128,20 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isAndroid) {
+      // 以下两行 设置android状态栏为透明的沉浸。写在组件渲染之后，是为了在渲染后进行set赋值，覆盖状态栏，写在渲染之前
+      // MaterialApp组件会覆盖掉这个值。
+      SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarDividerColor: null,
+          statusBarIconBrightness: Brightness.dark);
+      SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    }
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     return Scaffold(
         body: SafeArea(
-            child: Container(
+            child: _calendarController!=null?Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
@@ -159,7 +173,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                             TextSpan(
                                                 text: "次",
                                                 style: TextStyle(
-                                                  color: Colors.white,
+                                                  color: Colors.black45,
                                                   fontSize: 16,
                                                 ))
                                           ]))
@@ -198,7 +212,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                                             TextSpan(
                                                 text: "%",
                                                 style: TextStyle(
-                                                  color: Colors.white,
+                                                  color: Colors.black45,
                                                   fontSize: 16,
                                                 ))
                                           ]))
@@ -234,7 +248,8 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
 
                     // const SizedBox(height: 8.0),
                     // _buildButtons(),
-                    SizedBox(height: 1),
+                    // SizedBox(height: 1),
+
                     Container(
                       color: Colors.white,
                       child:
@@ -261,13 +276,13 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                 ),
               ),
             )
-
+                :Center(child: SizedBox(width: 30,height: 30,child: Ring2InsideLoading(color: MyColors.Colororange,),),)
         ));
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
-    return TableCalendar(
+    return _calendarController!=null?TableCalendar(
       rowHeight: 60,
       locale: 'zh-CN',
       calendarController: _calendarController,
@@ -400,7 +415,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
       },
       onVisibleDaysChanged: _onVisibleDaysChanged,
       onCalendarCreated: _onCalendarCreated,
-    );
+    ):Center(child: SizedBox(width: 30,height: 30,child: Ring2InsideLoading(color: MyColors.Colororange,),),);
   }
 
   Widget _buildEventsMarker(DateTime date, List events) {
@@ -488,7 +503,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
   }
 
   Widget _buildEventList() {
-    return ListView(
+    return _selectedEvents!=null?ListView(
       children: _selectedEvents
           .map((event) => Container(
                 decoration: BoxDecoration(
@@ -540,7 +555,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                 // ),
               ))
           .toList(),
-    );
+    ):Container();
   }
 
   Widget buildtag(String text, Color color, IconData icon) {
