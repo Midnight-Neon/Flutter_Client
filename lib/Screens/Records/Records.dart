@@ -134,14 +134,14 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
       SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           systemNavigationBarDividerColor: null,
-          statusBarIconBrightness: Brightness.dark);
+          statusBarIconBrightness: Brightness.light);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
     return Scaffold(
-        body: SafeArea(
-            child: _calendarController!=null?Container(
+      backgroundColor: Colors.white,
+        body:  _calendarController!=null?Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
@@ -249,7 +249,25 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
                     // const SizedBox(height: 8.0),
                     // _buildButtons(),
                     // SizedBox(height: 1),
-
+      Container(child:Stack(
+                      children: [
+                        Divider(
+                          height: 20.0,
+                          indent: 15.0,
+                          endIndent: 200.0,
+                          color: Colors.black45,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Icon(Icons.stars_rounded, size: 20.0)]),
+                        Divider(
+                          height: 20.0,
+                          indent: 200.0,
+                          endIndent: 15.0,
+                          color: Colors.black45,
+                        )
+                      ],
+                    ),color: Colors.white,),
                     Container(
                       color: Colors.white,
                       child:
@@ -277,7 +295,7 @@ print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
               ),
             )
                 :Center(child: SizedBox(width: 30,height: 30,child: Ring2InsideLoading(color: MyColors.Colororange,),),)
-        ));
+        );
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)

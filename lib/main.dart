@@ -35,7 +35,7 @@ void main() {
       // MaterialApp组件会覆盖掉这个值。
       SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark);
+          statusBarIconBrightness: Brightness.light);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
 
 }
@@ -67,7 +67,9 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
-        primaryColor: Colors.white
+        primaryColor: Colors.white,
+        appBarTheme: AppBarTheme(
+        brightness: Brightness.light,)
       ),
       home: MyHomePage(),
     );
@@ -156,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarIconBrightness:Brightness.dark));
     if(Global.profile==null||Global.profile.accessToken==null){
       return WelcomeScreen();
     }
