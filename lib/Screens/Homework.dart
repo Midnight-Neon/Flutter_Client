@@ -1,3 +1,11 @@
+import 'dart:convert';
+
+import 'package:bot_toast/bot_toast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:classmanage/components/StarRate.dart';
+import 'package:classmanage/components/Tags.dart';
+import 'package:classmanage/model/HomeworkInfoResp.dart';
+import 'package:leancloud_storage/leancloud.dart';
 import 'package:classmanage/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +15,9 @@ import 'package:markdown_widget/markdown_widget.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
+import '../http.dart';
+import 'Photo_view.dart';
 
 class OverScrollBehavior extends ScrollBehavior {
   @override
@@ -31,15 +42,92 @@ class OverScrollBehavior extends ScrollBehavior {
   }
 }
 
+
 class HomeworkScreen extends StatefulWidget {
+ final String id;
+ final String cid;
+
+  const HomeworkScreen({Key key, this.id, this.cid}) : super(key: key);
   @override
   _HomeworkScreenState createState() => _HomeworkScreenState();
 }
 
 class _HomeworkScreenState extends State<HomeworkScreen> {
-  int Wb_Select = 0;
+  int Wb_Select = -1;
   List<String> select_list = [];
-  bool ischoseque = true;
+  bool ischoseque = false;
+  bool isDone=false;
+  Data info;
+  Ans ans;
+
+
+  submitHomework()async{
+    var text=_publicController.text;
+    if((ischoseque&&text.length==0)||(!ischoseque&&Wb_Select==-1)){
+      BotToast.showSimpleNotification(title: "未填写内容");
+      return;
+    }
+    List<String> pics=[];
+    BotToast.showLoading();
+    List<Future<String>> flist=[];
+    try{
+      assets.forEach((element)  {
+        flist.add(_uploadPic(element));
+      });
+      pics= await Future.wait(flist,);
+
+    }catch(e){
+      print(e.toString());
+    }
+
+    BotToast.closeAllLoading();
+    var resp= await Global.dio.post("/course/${widget.cid}/homework/${widget.id}",data:{'text':text,
+        'pics':pics,
+        'inperson':isinPerson,"choice":ischoseque?Wb_Select:-1});
+    var res=json.decode(resp.data.toString());
+    if(res['code']==0){
+      BotToast.showSimpleNotification(title: "提交成功");
+      updateHomework();
+
+    }
+
+
+  }
+  Future<String> _uploadPic(AssetEntity element) async{
+    var title=await element.titleAsync;
+    var data=await element.fullData;
+    var file=await  LCFile.fromBytes(title, data).save();
+    return file.url;
+  }
+  @override
+  void initState() {
+    super.initState();
+    updateHomework();
+  }
+  updateHomework() async{
+    var resp=await Global.dio.get("/course/${widget.cid}/homework/${widget.id}");
+    // print(resp.data.toString());
+    var info= HomeworkInfoResp.fromJson(json.decode(resp.data.toString()));
+    if(info.code!=0){
+      BotToast.showSimpleNotification(title: "网络错误");
+      return;
+    }
+    // print(info.data.ans);
+    setState(() {
+      this.info=info.data;
+      ischoseque=info.data.choices.length>0;
+      isDone=info.data.ans.length>0;
+      isinPerson=info.data.ans.length>0?info.data.ans[0].inperson:false;
+      ans=info.data.ans.length>0?info.data.ans[0]:null;
+    });
+    if(isDone){
+      _publicController.text=info.data.ans[0].text;
+    }
+  }
+
+
+
+
   Widget options(ScrollController sc) {
     return Container(
         //color: Colors.black12,
@@ -98,19 +186,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                             Container(
                                 padding: EdgeInsets.fromLTRB(12, 8, 0, 8),
                                 child:
-                                    // new Container(
-                                    //   width: 20.0,
-                                    //   height: 20.0,
-                                    //   decoration: BoxDecoration(
-                                    //     shape: BoxShape.circle,
-                                    //     color:Colors.black
-                                    //   ),
-                                    //   child: Container(
-                                    //     padding: EdgeInsets.fromLTRB(5.5, 2, 0, 0),
-                                    //       child:Text(String.fromCharCode(index+65),style:TextStyle(
-                                    //     color:Colors.white
-                                    //   )))
-                                    // )
+
                                     Stack(
                                   children: [
                                     Icon(
@@ -157,90 +233,6 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
     );
   }
 
-  String data = """
-  
-
-## 第一次作业
-
-某列车调度站的铁道联接结构如 Figure 1 所示。
-
-其中，A 为入口，B 为出口，S 为中转盲端。所有铁道均为单轨单向式：列车行驶的方向只能是从 A 到 S，再从 S 到 B；另外，**不允许超车**。因为车厢可在 S 中驻留，所以它们从 B 端驶出的次序，可能与从 A 端驶入的次序不同。不过 S 的容量有限，同时驻留的车厢不得超过 m 节。
-
-设某列车由编号依次为 {1, 2, ..., n} 的 n 节车厢组成。调度员希望知道，按照以上交通规则，这些车厢能否以 {a1, a2, ..., an} 的次序，重新排列后从 B 端驶出。如果可行，应该以怎样的次序操作?
-
-#### 输入
-
-共两行。第一行为两个整数 n，m。第二行为以空格分隔的 n 个整数，保证为 {1, 2, ..., n} 的一个排列，表示待判断可行性的驶出序列{a1，a2，...，an}。
-
-\$Latex\$
-```
-#include <stdio.h>
-#define MANX 100005
-
-int Stack[MANX];
-int Out[MANX];
-int sTop=0;	//栈顶指针
-
-void push(int a)
-{
-	Stack[++sTop]=a;
-}
-
-void pop()
-{
-	sTop--;
-}
-
-int top()
-{
-	return Stack[sTop];
-}
-
-int main()
-{
-	// in 的时候一定是{1, 2, ..., n}
-	int n,m;
-	scanf("%d%d",&n,&m);
-	
-	int i;
-	for(i=1;i<=n;i++)
-		scanf("%d",&Out[i]);
-	
-	//算法开始
-	int j=0;
-	for(i=1;i<=n;i++)
-	{
-		//如果小于栈顶元素，直接可判断在栈中而无法出栈
-		if(Out[i]<top())
-		{
-			printf("No\\n");
-			return 0;
-		}
-
-		//直到 Out[i] 的元素全部加入栈
-		if(j<Out[i])
-			while(j!=Out[i])
-				push(++j);
-		
-		if(sTop>m)
-		{
-			printf("No\\n");
-			return 0;
-		}
-		
-		if(Out[i]==top())
-			pop();
-	}
-
-	printf("Yes\\n");
-	
-	return 0;
-}
-```
-
-
-
-""";
   ThemeData get currentTheme => Theme.of(context);
   Size _size;
   final TocController controller = TocController();
@@ -348,7 +340,8 @@ int main()
                 SizedBox(
                   height: 20.0,
                 ),
-                Card(
+
+          !isinPerson&isDone?Container(): Card(
                     color: SQColor.lightGray,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -357,7 +350,7 @@ int main()
                     child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          setState(() {
+                          isDone?null:setState(() {
                             isinPerson = !this.isinPerson;
                           });
                         },
@@ -395,8 +388,10 @@ int main()
                               maxLines: 8,
                               minLines: 8,
                               style: TextStyle(fontSize: 16),
+                              readOnly: isDone,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
+
 
                                   //去掉输入框的下滑线
                                   fillColor: SQColor.lightGray,
@@ -410,7 +405,25 @@ int main()
                               controller: _publicController,
                             ),
                             assets.length == 0
-                                ? Container()
+                                ? Container(child: isDone?Container(child:ListView.builder(scrollDirection: Axis.horizontal,padding: const EdgeInsets.all(10.0),shrinkWrap: true,itemCount: info.ans[0].pics.length,itemBuilder: (context, i) {
+                              var item = info.ans[0].pics[i];
+                              return GestureDetector(
+                                onTap: () {
+                                  return Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PhotoPreview(
+                                            imageProvider:
+                                            CachedNetworkImageProvider(
+                                                item),
+                                          )));
+                                },child:ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child:  CachedNetworkImage(imageUrl: item,height: 80,),
+
+                              ),);
+                            }),height: 100,)
+                                :Container(),)
                                 : Container(
                                     height: 120,
                                     child: ListView.builder(
@@ -426,12 +439,12 @@ int main()
                                             horizontal: 8.0,
                                             vertical: 16.0,
                                           ),
-                                          child: AspectRatio(
+                                          child:  AspectRatio(
                                             aspectRatio: 1.0,
                                             child: Stack(
                                               children: <Widget>[
                                                 Positioned.fill(
-                                                    child: _selectedAssetWidget(
+                                                    child:_selectedAssetWidget(
                                                         index)),
                                                 AnimatedPositioned(
                                                   duration:
@@ -452,7 +465,7 @@ int main()
                                         );
                                       },
                                     )),
-                            Card(
+                           isDone? Container():Card(
                                 color: SQColor.lightGray,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
@@ -502,7 +515,40 @@ int main()
                                   ),
                                 )),
                           ])),
-                Container(
+         if(ans!=null&&ans.reply!=null)
+           ...[SizedBox(height: 20,),
+           Stack(
+             children: [
+               Divider(
+                 height: 20.0,
+                 indent: 15.0,
+                 endIndent: 200.0,
+                 color: Colors.black45,
+               ),
+               Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [Icon(Icons.stars_rounded, size: 20.0)]),
+               Divider(
+                 height: 20.0,
+                 indent: 200.0,
+                 endIndent: 15.0,
+                 color: Colors.black45,
+               )
+             ],
+           ),
+           SizedBox(height: 10,),
+
+           RatingBar(value: ans.reply.rank.toDouble(),),
+           Container(child: Text(
+             "评语:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+             textAlign: TextAlign.left,), padding: EdgeInsets.only(left: 30),),
+           Text(ans.reply.text,
+             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+             textAlign: TextAlign.center,),
+           // Container(child:Tag(text: ans.reply.owner,icon: Icons.person,color1: MyColors.Colorolive,),padding: EdgeInsets.only(right: 20),),
+           //   Container(child: Text("---${ans.reply.owner}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),textAlign: TextAlign.right,),padding: EdgeInsets.only(right: 30),),
+         ],
+          Container(
                     margin: EdgeInsets.all(20),
                     child: TextButton(
                         style: ButtonStyle(
@@ -534,17 +580,23 @@ int main()
                                 MaterialStateProperty.all(Colors.black45),
                             padding:
                                 MaterialStateProperty.all(EdgeInsets.all(10))),
-                        onPressed: () {},
+                        onPressed: () async{
+                          if(isDone) return;
+                         submitHomework();
+
+
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.cloud_upload,
+                              isDone?Icons.check_circle:Icons.cloud_upload,
                             ),
                             SizedBox(
                               width: 10,
                             ),
-                            Text("提交")
+                            Text(isDone?"已提交":"提交"),
+
                           ],
                         ))),
               ])
@@ -566,7 +618,7 @@ int main()
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Markdown Page'),
+          title:info!=null? Text(info.title):Container(),
           centerTitle: true,
         ),
         body: SlidingUpPanel(
@@ -592,8 +644,8 @@ int main()
         padding: EdgeInsets.only(bottom: 10),
         child: ScrollConfiguration(
           behavior: OverScrollBehavior(),
-          child: MarkdownWidget(
-            data: data,
+          child: info!=null?MarkdownWidget(
+            data: info.content,
             controller: controller,
             physics: ClampingScrollPhysics(),
             styleConfig: StyleConfig(
@@ -623,7 +675,7 @@ int main()
                   ),
                 ),
                 markdownTheme: MarkdownTheme.lightTheme),
-          ),
+          ):Container(),
         ));
   }
 

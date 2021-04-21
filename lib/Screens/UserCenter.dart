@@ -1,4 +1,7 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:classmanage/components/Tags.dart';
+import 'package:classmanage/http.dart';
+import 'package:classmanage/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -64,7 +67,7 @@ class _UserCenterState extends State<UserCenter> {
                             size: 50,
                           ),
                           Text(
-                            "李翔",
+                            Global.profile.name,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 25,
@@ -74,6 +77,7 @@ class _UserCenterState extends State<UserCenter> {
                           SizedBox(
                             height: 5,
                           ),
+                          Global.profile.role!=Role.Teacher?
                           Tag(
                             text: "Lv.1",
                             color1: Colors.white,
@@ -82,12 +86,18 @@ class _UserCenterState extends State<UserCenter> {
                               width: 13,
                               height: 13,
                             ),
-                          ),
+                          ):Tag(text: "教师",
+                            color1: Colors.white,
+                            image: SvgPicture.asset(
+                              "assets/icons/doctor.svg",
+                              width: 13,
+                              height: 13,
+                            ),),
                           SizedBox(
                             height: 10,
                           ),
-                          Row(children: [Tag(text: "软件工程",icon: Icons.home_filled,color1: Color.fromRGBO(255,159,67,0.85),),
-                            SizedBox(width: 10),Tag(text: "计算机科学与技术",icon: Icons.flag,color1: Color.fromRGBO(40,199,111,0.85),)])
+                          Row(children: [Tag(text: Global.profile.major!=null?Global.profile.major:"软件工程",icon: Icons.home_filled,color1: Color.fromRGBO(255,159,67,0.85),),
+                            SizedBox(width: 10),Tag(text: Global.profile.department!=null?Global.profile.department:"计算机科学与技术",icon: Icons.flag,color1: Color.fromRGBO(40,199,111,0.85),)])
                         ],
                       ),
                       top: 40,
@@ -105,6 +115,7 @@ class _UserCenterState extends State<UserCenter> {
               child:GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: (){
+                    BotToast.showSimpleNotification(title: "测试版不允许修改信息,请联系管理员");
 
                   },
                   child: Container(
@@ -122,6 +133,44 @@ class _UserCenterState extends State<UserCenter> {
                         ),
                         Text(
                           "个人信息",
+                          style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
+                        ),
+                        Spacer(),
+                        Icon(Icons.chevron_right)
+                      ],
+                    ),
+                  ))),
+          Card(
+              color: SQColor.lightGray,
+
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              elevation: 0,
+              margin: EdgeInsets.all(10),
+              child:GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: (){
+                    Global.profile=null;
+                    Global.getprefs().remove("profile");
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyHomePage()));
+
+                  },
+                  child: Container(
+                    height: 60,
+                    padding:
+                    EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.logout,
+                          size: 26,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "退出登录",
                           style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
                         ),

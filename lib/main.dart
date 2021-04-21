@@ -22,6 +22,12 @@ import 'package:leancloud_storage/leancloud.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
+  LeanCloud.initialize(
+      'aeOmDTmS3ffFp58lwSdbf4qs-9Nh9j0Va', 'PPJz63PgkRHxILOfSnCtRon9',
+      server: 'https://aeomdtms.lc-cn-e1-shared.com',
+      queryCache: new LCQueryCache());
+  LCLogger.setLevel(LCLogger.DebugLevel);
+
   Global.init().then((value) =>  runApp(MyApp()));
 
 
@@ -31,10 +37,7 @@ void main() {
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
-  LeanCloud.initialize(
-      'aeOmDTmS3ffFp58lwSdbf4qs-9Nh9j0Va', 'PPJz63PgkRHxILOfSnCtRon9',
-      server: 'https://aeomdtms.lc-cn-e1-shared.com',
-      queryCache: new LCQueryCache());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -45,6 +48,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       builder: BotToastInit(), //1.调用BotToastInit
       navigatorObservers: [BotToastNavigatorObserver()],
+      navigatorKey: Routerkey.navigatorKey,
       theme: ThemeData(
         // This is the theme of your application.
         //

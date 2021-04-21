@@ -26,6 +26,9 @@ class Profile {
   int role;
   String refreshToken;
   String accessToken;
+  String department;
+  String major;
+  String group;
 
   Profile({this.iD, this.name, this.role, this.refreshToken, this.accessToken});
 
@@ -35,6 +38,11 @@ class Profile {
     role = json['role'].toInt();
     refreshToken = json['refresh_token'];
     accessToken = json['access_token'];
+    department = json['department'];
+    major = json['major'];
+    group=json['group'];
+
+
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +52,9 @@ class Profile {
     data['role'] = this.role;
     data['refresh_token'] = this.refreshToken;
     data['access_token'] = this.accessToken;
+    data['major']=this.major;
+    data['group']=this.group;
+    data['department']=this.department;
     return data;
   }
 }

@@ -1,14 +1,25 @@
-import 'package:classmanage/components/Tags.dart';
-import 'package:classmanage/model/contact.dart';
+import 'dart:convert';
+
+import 'package:bot_toast/bot_toast.dart';
+import 'package:classmanage/components/circle_2_inside_scale.dart';
+import 'package:classmanage/constants.dart';
+import 'package:classmanage/model/CheckinRResp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
+import '../../http.dart';
+
 class CheckinRecord extends StatefulWidget {
+  final String id;
+
+  const CheckinRecord({Key key, this.id}) : super(key: key);
+
   @override
   _CheckinRecordState createState() => _CheckinRecordState();
 }
+
 final Map<DateTime, List> _holidays = {
   DateTime(2020, 1, 1): ['New Year\'s Day'],
   DateTime(2020, 1, 6): ['Epiphany'],
@@ -17,72 +28,50 @@ final Map<DateTime, List> _holidays = {
   DateTime(2020, 4, 22): ['Easter Monday'],
 };
 
-class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
+class _CheckinRecordState extends State<CheckinRecord>
+    with TickerProviderStateMixin {
+  Map<DateTime, List> _events = {};
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
-  String monthday ;
-  @override
-  void initState() {
-    super.initState();
-    initializeDateFormatting();
+  String monthday;
+  int allNum=0;
+  int absentNum=0;
+  static const RecordType=["",'扫码签到','签到码签到','人脸签到'];
+  static const RecordTypeIcon=["",Icons.qr_code,CupertinoIcons.number_circle_fill,Icons.face];
+  var formatter=DateFormat("ahh:mm","zh_CN");
+  getRecords() async {
+    var resp = await Global.dio.get("/course/${widget.id}/signr");
+    var info = CheckinRResp.fromJson(json.decode(resp.data.toString()));
+    if (info.code != 0) {
+      BotToast.showSimpleNotification(title: "网络错误");
+      return;
+    }
+    var data = info.all;
+    _events = {};
+    absentNum=0;
+    allNum=data.length;
+    data.forEach((element) {
+      var datetime =
+          DateTime.fromMillisecondsSinceEpoch(element.datetime * 1000);
+      print(datetime);
+      var isSign=element.list.contains(Global.profile.iD);
+      if(!isSign){
+        absentNum++;
+      }
+      
 
+      if (_events[element.datetime * 1000] == null) {
+        _events[datetime] = [
+          CheckinEvent(element.owner.name, datetime, element.type,
+              isSign)
+        ];
+      } else {
+        _events[datetime].add(CheckinEvent(element.owner.name, datetime,
+            element.type,isSign ));
+      }
+    });
     final _selectedDay = DateTime.now();
-    monthday = _selectedDay.month.toString()+"月"+_selectedDay.day.toString()+"日";
-    _events = {
-      _selectedDay.subtract(Duration(days: 30)): [
-        'Event A0',
-        'Event B0',
-        'Event C0'
-      ],
-      _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
-      _selectedDay.subtract(Duration(days: 20)): [
-        'Event A2',
-        'Event B2',
-        'Event C2',
-        'Event D2'
-      ],
-      _selectedDay.subtract(Duration(days: 16)): ['Event A3', 'Event B3'],
-      _selectedDay.subtract(Duration(days: 10)): [
-        'Event A4',
-        'Event B4',
-        'Event C4'
-      ],
-      _selectedDay.subtract(Duration(days: 4)): [
-        'Event A5',
-        'Event B5',
-        'Event C5'
-      ],
-      _selectedDay.subtract(Duration(days: 2)): ['Event A6', 'Event B6'],
-      _selectedDay: ['东廊102', 'Event B7', 'Event C7', 'Event D7'],
-      _selectedDay.add(Duration(days: 1)): [
-        'Event A8',
-        'Event B8',
-        'Event C8',
-        'Event D8'
-      ],
-      _selectedDay.add(Duration(days: 3)):
-      Set.from(['Event A9', 'Event A9', 'Event B9']).toList(),
-      _selectedDay.add(Duration(days: 7)): [
-        'Event A10',
-        'Event B10',
-        'Event C10'
-      ],
-      _selectedDay.add(Duration(days: 11)): ['Event A11', 'Event B11'],
-      _selectedDay.add(Duration(days: 17)): [
-        'Event A12',
-        'Event B12',
-        'Event C12',
-        'Event D12'
-      ],
-      _selectedDay.add(Duration(days: 22)): ['Event A13', 'Event B13'],
-      _selectedDay.add(Duration(days: 26)): [
-        'Event A14',
-        'Event B14',
-        'Event C14'
-      ],
-    };
 
     _selectedEvents = _events[_selectedDay] ?? [];
     _calendarController = CalendarController();
@@ -91,8 +80,22 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-
+    // print(_events);
+print(((1-(absentNum/allNum))*100).toStringAsFixed(2));
     _animationController.forward();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting();
+
+    final _selectedDay = DateTime.now();
+    monthday =
+        _selectedDay.month.toString() + "月" + _selectedDay.day.toString() + "日";
+    print(_selectedDay.millisecondsSinceEpoch);
+    getRecords();
   }
 
   @override
@@ -105,7 +108,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
   void _onDaySelected(DateTime day, List events, List holidays) {
     print('CALLBACK: _onDaySelected');
     setState(() {
-      monthday=day.month.toString()+"月"+day.day.toString()+"日";
+      monthday = day.month.toString() + "月" + day.day.toString() + "日";
       _selectedEvents = events;
     });
   }
@@ -127,12 +130,12 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
             child: Container(
                 color: Color(0xfff8faf9),
                 child:
-                Column(
+                _calendarController!=null?Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Container(
                         color: Colors.white,
-                        child:Column(children: [
+                        child: Column(children: [
                           Container(
                             margin: EdgeInsets.all(10),
                             height: 80,
@@ -141,22 +144,25 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                 Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text("缺勤次数",
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
+                                            color:
+                                                Colors.white.withOpacity(0.9),
                                             fontSize: 12,
-                                          //  fontWeight: FontWeight.bold
+                                            //  fontWeight: FontWeight.bold
                                           )),
                                       SizedBox(
                                         height: 5,
                                       ),
                                       Text.rich(TextSpan(
-                                          text: "0",
+                                          text: "${absentNum}",
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 24, fontWeight: FontWeight.bold),
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
                                           children: [
                                             TextSpan(
                                                 text: "次",
@@ -171,7 +177,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                 ),
                                 VerticalDivider(
                                   color: Colors.white,
-                                 // width: 2,
+                                  // width: 2,
                                   thickness: 2,
                                   indent: 10,
                                   endIndent: 10,
@@ -179,21 +185,24 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                                 Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text("出勤率",
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
+                                            color:
+                                                Colors.white.withOpacity(0.9),
                                             fontSize: 12,
                                           )),
                                       SizedBox(
                                         height: 5,
                                       ),
                                       Text.rich(TextSpan(
-                                          text: "20.00",
+                                          text: "${((1-(absentNum/allNum))*100).toStringAsFixed(2)}",
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 24, fontWeight: FontWeight.bold),
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
                                           children: [
                                             TextSpan(
                                                 text: "%",
@@ -209,48 +218,54 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
                               ],
                             ),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22),
-                                image:  new DecorationImage(
-                                image: new ExactAssetImage('assets/images/s2.png'),
+                              borderRadius: BorderRadius.circular(22),
+                              image: new DecorationImage(
+                                image:
+                                    new ExactAssetImage('assets/images/s2.png'),
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
                           Stack(
                             children: [
-                              Divider(height:10.0,indent:15.0,endIndent:200.0,color: Colors.black45,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                  children:[Icon(Icons.star,size: 10.0)]
+                              Divider(
+                                height: 10.0,
+                                indent: 15.0,
+                                endIndent: 200.0,
+                                color: Colors.black45,
                               ),
-                              Divider(height:10.0,indent:200.0,endIndent:15.0,color: Colors.black45,)
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [Icon(Icons.star, size: 10.0)]),
+                              Divider(
+                                height: 10.0,
+                                indent: 200.0,
+                                endIndent: 15.0,
+                                color: Colors.black45,
+                              )
                             ],
                           ),
-
                           _buildTableCalendarWithBuilders(),
-                        ])
-                    ),
+                        ])),
                     // Switch out 2 lines below to play with TableCalendar's settings
                     //-----------------------
                     // _buildTableCalendar(),
 
                     // const SizedBox(height: 8.0),
                     // _buildButtons(),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              padding: EdgeInsets.fromLTRB(10, 8, 0, 8),
-                              child:
-                              Text("签到记录"+" "+monthday,style: TextStyle(
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 8, 0, 8),
+                          child: Text("签到记录" + " " + monthday,
+                              style: TextStyle(
                                 fontSize: 13.0,
                                 color: Colors.black26,
-                              )))]),
+                              )))
+                    ]),
                     //  const SizedBox(height: 8.0),
                     Expanded(child: _buildEventList()),
                   ],
-                ))
-        ));
+                ):Center(child: Circle2InsideScaleLoading(),))));
   }
 
   // Simple TableCalendar configuration (using Styles)
@@ -268,7 +283,7 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
       ),
       headerStyle: HeaderStyle(
         formatButtonTextStyle:
-        TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
+            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
         formatButtonDecoration: BoxDecoration(
           color: Colors.deepOrange[400],
           borderRadius: BorderRadius.circular(16.0),
@@ -310,10 +325,20 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
       ),
       builders: CalendarBuilders(
         dayBuilder: (context, date, events) {
+          var color=Colors.white;
+          if(events!=null){
+            var eventsList=events.cast<CheckinEvent>();
+            bool flag=true;
+            eventsList.forEach((element) {
+              if(!element.isSign) flag=false;
+            });
+            color=flag?MyColors.ColoroliveLight:MyColors.ColororangeLight;
+
+          }
           return Container(
             margin: const EdgeInsets.all(0.5),
             padding: const EdgeInsets.only(top: 5.0),
-            color: (events != null) ? Color(0xffE9F5E9) : Colors.white,
+            color: color,
             width: 100,
             height: 100,
             alignment: Alignment.topCenter,
@@ -362,14 +387,19 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
           final children = <Widget>[];
 
           if (events.isNotEmpty) {
-            children.add(Positioned(
-                left: 0,
-                right: 0,
-                bottom: 10,
-                child: Icon(
-                  Icons.check,
-                  color: Colors.green,
-                )));
+            bool flag=true;
+            events.forEach((element) {
+              if(!element.isSign) flag=false;
+            });
+            if(flag)
+              children.add(Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 10,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )));
             // if (events.length > 1) {
             //   children.add(
             //     Positioned(
@@ -411,8 +441,8 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
         color: _calendarController.isSelected(date)
             ? Colors.brown[500]
             : _calendarController.isToday(date)
-            ? Colors.brown[300]
-            : Colors.blue[400],
+                ? Colors.brown[300]
+                : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
@@ -491,49 +521,58 @@ class _CheckinRecordState extends State<CheckinRecord> with TickerProviderStateM
     return ListView(
       children: _selectedEvents
           .map((event) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          // border: Border.all(width: 0.8),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        margin:
-        const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        child:
-        InkWell(
-          child: Container(
-              padding: EdgeInsets.fromLTRB(12, 12, 8, 12),
-                child: Row(
-              children: [
-                Icon(Icons.circle,color: Colors.greenAccent,size: 12.0,),
-                SizedBox(width: 15.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(event.toString(),style: TextStyle(
-                      fontSize: 15.0,
-                    ),),
-                    SizedBox(height: 5.0),
-                    Text("PM-02:59",style: TextStyle(
-                      fontSize: 11.0,
-                      color: Colors.black45
-                    ),)
-                  ],
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  // border: Border.all(width: 0.8),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-              //  SizedBox(width: 20.0),
-                Spacer(),
-                buildtag("人脸识别", Color(0xff43aedc), Icons.face)
-              ],
-            )),
-          onTap: () => print('$event tapped!'),
-        ),
-        // ListTile(
-        //   title: Text(event.toString()),
-        //   onTap: () => print('$event tapped!'),
-        // ),
-      ))
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: InkWell(
+                  child: Container(
+                      padding: EdgeInsets.fromLTRB(12, 12, 8, 12),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            color: event.isSign?Colors.greenAccent:Colors.orangeAccent,
+                            size: 12.0,
+                          ),
+                          SizedBox(width: 15.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                event.isSign?"已签到":"未签到",
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                ),
+                              ),
+                              SizedBox(height: 5.0),
+
+                              Text(
+                                formatter.format(event.time),
+                                style: TextStyle(
+                                    fontSize: 11.0, color: Colors.black45),
+                              )
+                            ],
+                          ),
+                          //  SizedBox(width: 20.0),
+                          Spacer(),
+                          buildtag(RecordType[event.type], Color(0xff43aedc), RecordTypeIcon[event.type])
+                        ],
+                      )),
+                  onTap: () => print('$event tapped!'),
+                ),
+                // ListTile(
+                //   title: Text(event.toString()),
+                //   onTap: () => print('$event tapped!'),
+                // ),
+              ))
           .toList(),
     );
   }
+
   Widget buildtag(String text, Color color, IconData icon) {
     return Container(
         margin: EdgeInsets.only(right: 5),

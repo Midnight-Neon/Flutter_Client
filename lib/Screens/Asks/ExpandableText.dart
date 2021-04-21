@@ -41,10 +41,10 @@ class _ExpandableTextState extends State<ExpandableText> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             expand ?
-            Container(child:Text(text ?? '', style: style),padding: EdgeInsets.only(bottom: 15), width: double.maxFinite,):
-      Container(child:Text(text ?? '', maxLines: maxLines,
+        Positioned(child:Container(child:Text(text ?? '', style: style),padding: EdgeInsets.only(bottom: 15), width: double.maxFinite,),top: 0,left: 0,):
+      Positioned(child:Container(child:Text(text ?? '', maxLines: maxLines,textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: style),width: double.maxFinite,),
+                style: style),width: double.maxFinite,alignment: Alignment.topLeft,),top: 0,left: 0,),
 
             Positioned(child: GestureDetector(
               behavior: HitTestBehavior.translucent,
@@ -73,7 +73,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           ],
         );
       } else {
-        return Text(text ?? '', style: style);
+        return Container(child:Text(text ?? '', style: style),alignment: Alignment.topLeft,);
       }
     });
   }

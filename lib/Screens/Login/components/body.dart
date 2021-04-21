@@ -55,6 +55,8 @@ LoginResp res=LoginResp.fromJson(json.decode(resp.data.toString()));
 print(res);
 if(res.code!=0){
   BotToast.showSimpleNotification(title: "登录失败");
+  BotToast.closeAllLoading();
+
 }else{
   Global.profile=res.data;
   Global.getprefs().setString("profile", json.encode(res.data));

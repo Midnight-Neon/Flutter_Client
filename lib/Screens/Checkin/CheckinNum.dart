@@ -1,21 +1,42 @@
+import 'dart:convert';
+
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numeric_keyboard/numeric_keyboard.dart';
 
 import '../../constants.dart';
+import '../../http.dart';
 
 class CheckinCode extends StatefulWidget {
+ final String code;
+
+  const CheckinCode({Key key, this.code}) : super(key: key);
   @override
   _CheckinCodeState createState() => _CheckinCodeState();
 }
 
 class _CheckinCodeState extends State<CheckinCode> {
   String text = '';
+  String Title='请输入签到码';
 
   void _onKeyboardTap(String value) {
     setState(() {
       text = text + value;
     });
+  }
+  submit()async{
+    var res= await Global.dio.post("/checkin",data: {"code":widget.code,"uid":Global.profile.iD,"type":2,"name":Global.profile.name,"num":text});
+    var data=  json.decode( res.data.toString());
+    if(data['code']==0){
+      BotToast.showSimpleNotification(title: "签到成功");
+      Navigator.pop(context);
+    }else{
+      setState(() {
+        Title="签到码错误或过期";
+        text="";
+      });
+    }
   }
 
   Widget otpNumberWidget(int position) {
@@ -84,7 +105,7 @@ class _CheckinCodeState extends State<CheckinCode> {
                         Container(
                             margin:
                             const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text('请输入签到码',
+                            child: Text(Title,
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 26,
@@ -114,6 +135,7 @@ class _CheckinCodeState extends State<CheckinCode> {
                     child: RaisedButton(
                       onPressed: () {
                         // loginStore.validateOtpAndLogin(context, text);
+submit();
                       },
                       color: MyColors.primaryColor,
                       shape: const RoundedRectangleBorder(

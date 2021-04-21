@@ -17,6 +17,8 @@ class LatexBlock {
 
   ///the SVGImage widget
   Widget getLatexBlockWidget(m.Element node) {
+    print(node.attributes['src']);
+
     return SvgPicture.network(
       Uri.encodeFull(node.attributes['src']),
       width: 18,
@@ -24,6 +26,7 @@ class LatexBlock {
   }
 
   InlineSpan getLatexBlockSpan(m.Element node) {
+    print(node.attributes['src']);
     Widget image = SvgPicture.network(
       Uri.encodeFull(node.attributes['src']),
       width: 18,
@@ -34,9 +37,11 @@ class LatexBlock {
 }
 
 InlineSpan getLatexBlockSpan(m.Element node) {
+  print(node.attributes['src']);
+print(Uri.encodeFull(node.attributes['src']));
   Widget image = SvgPicture.network(
-    Uri.encodeFull(node.attributes['src']),
-    height: 16,
+    node.attributes['src'],
+    height: 18,
   );
 
   return WidgetSpan(child: image);

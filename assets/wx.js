@@ -25,7 +25,7 @@ db.createCollection("asks");
 // Documents of asks
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+// //session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("asks").insert([ {
     _id: ObjectId("5f3cb1cc12ae074737bcb635"),
@@ -82,7 +82,9 @@ db.getCollection("asks").insert([ {
         }
     ]
 } ]);
-session.commitTransaction(); session.endSession();
+// //session.commitTransaction();
+ 
+session.endSession();
 
 // ----------------------------
 // Collection structure for chats
@@ -94,7 +96,7 @@ db.createCollection("chats");
 // Documents of chats
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("chats").insert([ {
     _id: ObjectId("5f3de74699144a826c45f5f5"),
@@ -132,7 +134,8 @@ db.getCollection("chats").insert([ {
         }
     ]
 } ]);
-session.commitTransaction(); session.endSession();
+////session.commitTransaction();
+ session.endSession();
 
 // ----------------------------
 // Collection structure for checkin
@@ -144,7 +147,7 @@ db.createCollection("checkin");
 // Documents of checkin
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("checkin").insert([ {
     _id: ObjectId("5f408ecd3082c62d7e1d218c"),
@@ -875,7 +878,8 @@ db.getCollection("checkin").insert([ {
     checktime: NumberInt("1599562962"),
     uid: "2017002"
 } ]);
-session.commitTransaction(); session.endSession();
+//session.commitTransaction();
+ session.endSession();
 
 // ----------------------------
 // Collection structure for checkinr
@@ -887,7 +891,7 @@ db.createCollection("checkinr");
 // Documents of checkinr
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("checkinr").insert([ {
     _id: ObjectId("5f408e833082c62d7e1d218b"),
@@ -1091,7 +1095,8 @@ db.getCollection("checkinr").insert([ {
     num: NumberInt("0"),
     type: NumberInt("2")
 } ]);
-session.commitTransaction(); session.endSession();
+//session.commitTransaction();
+ session.endSession();
 
 // ----------------------------
 // Collection structure for classinfo
@@ -1103,7 +1108,7 @@ db.createCollection("classinfo");
 // Documents of classinfo
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("classinfo").insert([ {
     _id: ObjectId("5f3a62b2fc0ab2b9944b495c"),
@@ -2167,7 +2172,8 @@ db.getCollection("classinfo").insert([ {
     "homework_unreply": [ ],
     pnum: NumberInt("84")
 } ]);
-session.commitTransaction(); session.endSession();
+//session.commitTransaction();
+ session.endSession();
 
 // ----------------------------
 // Collection structure for classuser
@@ -2179,7 +2185,7 @@ db.createCollection("classuser");
 // Documents of classuser
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("classuser").insert([ {
     _id: ObjectId("5f3a62b2fc0ab2b9944b495d"),
@@ -3315,7 +3321,8 @@ db.getCollection("classuser").insert([ {
     homeworkreply: [ ],
     askreply: [ ]
 } ]);
-session.commitTransaction(); session.endSession();
+//session.commitTransaction();
+ session.endSession();
 
 // ----------------------------
 // Collection structure for homework
@@ -3327,7 +3334,7 @@ db.createCollection("homework");
 // Documents of homework
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("homework").insert([ {
     _id: ObjectId("5f3bad1f49892fd3edf49617"),
@@ -3385,7 +3392,8 @@ db.getCollection("homework").insert([ {
     cid: "5f3a62b2fc0ab2b9944b495c",
     "homework_done": NumberInt("0")
 } ]);
-session.commitTransaction(); session.endSession();
+//session.commitTransaction();
+ session.endSession();
 
 // ----------------------------
 // Collection structure for user
@@ -3397,7 +3405,7 @@ db.createCollection("user");
 // Documents of user
 // ----------------------------
 session = db.getMongo().startSession();
-session.startTransaction();
+//session.startTransaction();
 db = session.getDatabase("wx");
 db.getCollection("user").insert([ {
     _id: "1803010101",
@@ -4375,4 +4383,5 @@ db.getCollection("user").insert([ {
     PassWd: "21232f297a57a5a743894a0e4a801fc3",
     role: NumberInt("-2")
 } ]);
-session.commitTransaction(); session.endSession();
+//session.commitTransaction();
+ session.endSession();

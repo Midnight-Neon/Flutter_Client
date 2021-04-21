@@ -1,10 +1,21 @@
+import 'dart:convert';
+
+import 'package:bot_toast/bot_toast.dart';
+import 'package:leancloud_storage/leancloud.dart';
 import 'package:classmanage/constants.dart';
+import 'package:classmanage/http.dart';
 import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import '../Homework.dart';
 
 class AskNew extends StatefulWidget {
+  final String id;
+  final String aid;
+  final String title;
+
+  const AskNew({Key key, this.id, this.aid, this.title}) : super(key: key);
   @override
   _AskNewState createState() => _AskNewState();
 }
@@ -12,11 +23,21 @@ class AskNew extends StatefulWidget {
 class _AskNewState extends State<AskNew> {
   ThemeData get currentTheme => Theme.of(context) ;
   Size  _size;
+  bool isComment;
   final TextEditingController _publicController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
 
   List<AssetEntity> assets=[];
   var isDisplayingDetail=true;
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting();
+    setState(() {
+      isComment=widget.aid!=null;
+    });
+
+  }
   void removeAsset(int index) {
     setState(() {
       assets.removeAt(index);
@@ -72,6 +93,61 @@ class _AskNewState extends State<AskNew> {
       ),
     );
   }
+  submitAsk() async{
+    var title=_titleController.text;
+    var content=_publicController.text;
+    if(title.length==0) {
+      BotToast.showSimpleNotification(title: "请填写标题");
+    }
+    BotToast.showLoading();
+    List<String> pic=[];
+    var time=DateFormat("yyyy/MM/dd","zh_CN").format(DateTime.now());
+    List<Future<String>> flist=[];
+    try{
+    assets.forEach((element)  {
+      flist.add(_uploadPic(element));
+      });
+  pic= await Future.wait(flist,);
+    var resp= await Global.dio.post("/course/${widget.id}/asks",data: {'title':title,'owner':Global.profile.name,'uid':Global.profile.iD,'reply':[],'treply':0,'role':Global.profile.role,'content':content,'time':time,'pics':pic});
+      if(resp.data['code']==0){
+        BotToast.closeAllLoading();
+        BotToast.showSimpleNotification(title: "发送成功");
+        Navigator.pop(context);
+      }
+    }catch(e){
+      print(e.toString());
+    }
+    
+  }
+  submitComment()async{
+    // var title=_titleController.text;
+    var content=_publicController.text;
+    if(content.length==0) {
+      BotToast.showSimpleNotification(title: "请填写标题");
+    }
+    BotToast.showLoading();
+    List<String> pic=[];
+    var time=DateFormat("yyyy/MM/dd","zh_CN").format(DateTime.now());
+    try{var resp= await Global.dio.post("/course/${widget.id}/ask/${widget.aid}/reply",data: {"owner":Global.profile.name,"uid":Global.profile.iD,"replys":[],"reply":-1,"content":content,"time":time,"role":Global.profile.role});
+    var res=json.decode(resp.data.toString());
+    if(res['code']==0){
+      BotToast.closeAllLoading();
+      BotToast.showSimpleNotification(title: "发送成功");
+      Navigator.pop(context);
+
+    }}catch(e){
+      BotToast.closeAllLoading();
+      BotToast.showSimpleNotification(title: "网络错误");
+
+      print(e);
+    }
+  }
+  Future<String> _uploadPic(AssetEntity element) async{
+    var title=await element.titleAsync;
+    var data=await element.fullData;
+    var file=await  LCFile.fromBytes(title, data).save();
+    return file.url;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +161,7 @@ class _AskNewState extends State<AskNew> {
     behavior: OverScrollBehavior(),
     child: ListView(children:[
           SizedBox(height: 20,),
-          TextField(
+         isComment?Text(widget.title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),) :TextField(
 
           // minLines: 2,
 
@@ -123,7 +199,7 @@ class _AskNewState extends State<AskNew> {
               disabledBorder: null),
           controller: _publicController,
         ),
-          assets.length==0?Container():Container(
+      assets.length==0||isComment==true?Container():Container(
               height:120,child:ListView.builder(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
@@ -154,7 +230,7 @@ class _AskNewState extends State<AskNew> {
             },
           )),
 
-          Card(
+      isComment==false? Card(
               color: SQColor.lightGray,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -195,8 +271,9 @@ class _AskNewState extends State<AskNew> {
                     ],
                   ),
                 ),
-              )), SizedBox(height: 20,),
+              )):Container(), SizedBox(height: 20,),
       TextButton(
+
           style: ButtonStyle(
               backgroundColor:
               MaterialStateProperty.resolveWith((states) {
@@ -223,7 +300,7 @@ class _AskNewState extends State<AskNew> {
               ),
               overlayColor: MaterialStateProperty.all(Colors.black45),
               padding: MaterialStateProperty.all(EdgeInsets.all(10))),
-          onPressed: () {},
+          onPressed: () =>isComment?submitComment():submitAsk(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

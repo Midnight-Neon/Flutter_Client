@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:classmanage/Screens/Checkin/CheckinFace.dart';
 import 'package:classmanage/Screens/Checkin/CheckinNum.dart';
 import 'package:classmanage/components/circle_2_inside_scale.dart';
 import 'package:classmanage/constants.dart';
+import 'package:classmanage/http.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -31,6 +35,7 @@ class _CodeScannerState extends State<CodeScanner> {
       body: _buildQrView(context),
     );
   }
+
 
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
@@ -85,16 +90,58 @@ class _CodeScannerState extends State<CodeScanner> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async{
+      if(scanData.code.startsWith("{")){
       this.controller.pauseCamera();
       setState(() {
         result = scanData;
       });
-      Future.delayed(Duration(seconds: 5), () {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => CheckinCode()));
-        print('延时1s执行');
-      });
+      try{
+        var obj=json.decode(result.code);
+        var code=obj['code'];
+        if(code==null){
+          setState(() {
+            result = null;
+          });
+          return;
+        }
+        this.controller.resumeCamera();
+        this.controller.dispose();
+
+
+
+        switch (obj['type']){
+          case 1:
+
+           var res= await Global.dio.post("/checkin",data: {"code":code,"uid":Global.profile.iD,"type":1,"name":Global.profile.name});
+         var data=  json.decode( res.data.toString());
+
+         if(data['code']==0){
+           BotToast.showSimpleNotification(title: "签到成功");
+         }
+           Navigator.pop(context);
+          break;
+          case 2:
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => CheckinCode(code: obj['code'],)));
+            return;
+          case 3:
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => CheckinFace(code: obj['code'],)));
+            return;
+        }
+
+      }catch(_){
+        setState(() {
+          result = null;
+        });
+      }
+
+      }
+      // Future.delayed(Duration(seconds: 2), () {
+      //
+      //   print('延时1s执行');
+      // });
     });
   }
 }

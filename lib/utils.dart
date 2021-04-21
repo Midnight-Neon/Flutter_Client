@@ -17,3 +17,6 @@ void schemeJump(BuildContext context, String schemeUrl) {
       break;
   }
 }
+class Routerkey {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+}

@@ -1,17 +1,68 @@
+import 'dart:convert';
+
+import 'package:bot_toast/bot_toast.dart';
 import 'package:classmanage/components/Tags.dart';
 import 'package:classmanage/constants.dart';
+import 'package:classmanage/model/CourseInfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../http.dart';
 
 class NotificationSceen extends StatefulWidget {
+  final String id;
+
+  const NotificationSceen({Key key, this.id}) : super(key: key);
   @override
   _NotificationState createState() => _NotificationState();
 }
 
 class _NotificationState extends State<NotificationSceen> {
   Size _size;
+  List<Notifications> infos=[];
 
+@override
+  void initState() {
+    super.initState();
+getInfo();
+  }
+  getInfo() async{
+    var resp=await Global.dio.get("/course/${widget.id}");
+    var info= CourseInfoResp.fromJson(json.decode(resp.data.toString()));
+    print(info.toJson());
+    if(info.code!=0){
+      BotToast.showSimpleNotification(title: "网络错误");
+      return;
+    }
+    var data=info.data;
+    infos=[];
+    data.notifications.forEach((element) {
+      if(data.notificationsDone.contains(element.sId)){
+        element.isRead=true;
+
+      }
+      infos.add(element);
+    });
+    print(infos);
+    setState(() {
+    });
+
+
+  }
+  setRead(String id,int i) async{
+  if(infos[i].isRead) return;
+    var resp=await Global.dio.get("/course/${widget.id}/notify/${id}");
+    var info= CourseInfoResp.fromJson(json.decode(resp.data.toString()));
+    if(info.code==0){
+      infos[i].isRead=true;
+    }
+    setState(() {
+
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery
@@ -22,16 +73,19 @@ class _NotificationState extends State<NotificationSceen> {
           backgroundColor: Colors.white,
           brightness: Brightness.dark,
           title: Text(
-            "有机化学",
+            "通知",
             style: TextStyle(letterSpacing: 3, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
         ),
         body: Container(
           child: ListView.builder(
+            itemCount: infos.length,
+
               padding: EdgeInsets.all(10),
               itemBuilder: (context, index) {
-                return Card(
+                var info=infos[index];
+                return GestureDetector(onTap: ()=>{setRead(info.sId, index)},child: Card(
                   child: Column(children: [
                     Container(
                         decoration: BoxDecoration(
@@ -47,7 +101,7 @@ class _NotificationState extends State<NotificationSceen> {
                                   borderRadius: BorderRadius.circular(8),
                                   color: Colors.deepOrangeAccent),
                               child: Text(
-                                "张",
+                                "${info.owner[0]}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -58,19 +112,21 @@ class _NotificationState extends State<NotificationSceen> {
                               width: 0,
                             ),
                             Text(
-                              "张国平",
+                              info.owner,
                               style: TextStyle(
                                   color: Color(0xff666666), fontSize: 16),
                             ),
                             Spacer(),
                             Container(
-                                child: Image.asset(
-                                  "assets/icons/read.png",
+                                child: info.isRead?SvgPicture.asset(
+                                  "assets/icons/read.svg",
                                   width: 40,
                                   height: 40,
                                   alignment: Alignment.topRight,
+                                  color: MyColors.ColordarkGray.withOpacity(0.4),
 
-                                ),
+
+                                ):null,
                                 transform: Matrix4.translationValues(0, -4, 0))
                           ],
                         )),
@@ -78,17 +134,16 @@ class _NotificationState extends State<NotificationSceen> {
                       padding: EdgeInsets.only(
                           top: 5, left: 20, right: 20, bottom: 10),
                       child: Text(
-                        "在App设计中状态栏纯色的这种设计很常见，但是如果状态栏需要为白色的时候就必须为黑色字体。在Android中已经有很多成熟的方案来处理这种情况，那我们现在看看在Flutter中这种情况该怎么处理。",
-                        style:TextStyle(fontWeight: FontWeight.w500,fontSize: 17),),
+info.content,                        style:TextStyle(fontWeight: FontWeight.w500,fontSize: 17),),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 20,right: 10,top: 5,bottom: 10),
                       child: Row(
-                        children: [ buildtag("通知", SQColor.orange) ],
+                        children: info.tag.map((e) =>  buildtag(e, SQColor.orange)).toList(),
                       ),
                     )
                   ]),
-                );
+                ));
               }),
         ));
   }

@@ -6,6 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class CourseItem extends StatelessWidget {
+  final String Name;
+  final String id;
+  final String Teacher;
+  final String ClassName;
+
+  const CourseItem({Key key, this.Name, this.id, this.Teacher, this.ClassName}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -18,7 +24,7 @@ class CourseItem extends StatelessWidget {
         ),
         elevation: 5,
         child: GestureDetector(onTap: ()=>{
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ClassIndex()))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ClassIndex(id: id,name: Name,className: ClassName,teacher: Teacher,)))
         },child:Container(
           height: 130,
           padding: EdgeInsets.only(left: 30, right: 10, top: 10, bottom: 10),
@@ -44,7 +50,7 @@ class CourseItem extends StatelessWidget {
                         height: 15,
                       ),
                       Text(
-                        "有机化学",
+                        Name,
                         style: TextStyle(
                             fontStyle: FontStyle.italic,
                             color: Colors.white.withOpacity(0.95),
@@ -65,9 +71,9 @@ class CourseItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Tag(text: "汤家凤 / 李永乐 ",icon: CupertinoIcons.person_alt,color1: Colors.grey,),
+                  Tag(text: Teacher,icon: CupertinoIcons.person_alt,color1: Colors.grey,),
             SizedBox(width: 10,)
-            ,Tag(text: "全校班 ",icon: CupertinoIcons.text_bubble_fill
+            ,Tag(text: ClassName,icon: CupertinoIcons.text_bubble_fill
                     ,color1: Colors.grey,)
 
                 ],

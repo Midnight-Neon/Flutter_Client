@@ -1,11 +1,21 @@
+import 'dart:convert';
+
 import 'package:azlistview/azlistview.dart';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:classmanage/Screens/Asks/AskView.dart';
 import 'package:classmanage/constants.dart';
+import 'package:classmanage/model/StuListResp.dart';
 import 'package:classmanage/model/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lpinyin/lpinyin.dart';
 
+import '../../http.dart';
+
 class StudentLists extends StatefulWidget {
+  final String id;
+
+  const StudentLists({Key key, this.id}) : super(key: key);
   @override
   _StudentListsState createState() => _StudentListsState();
 }
@@ -15,19 +25,33 @@ class _StudentListsState extends State<StudentLists> {
   List<ContactInfo> topList = [];
 
   void loadData() async {
-    topList.add(ContactInfo(name:"张国平",tagIndex:"☆",bgColor: Colors.orange,));
-    topList.add(ContactInfo(name:"李翔",tagIndex:"☆",bgColor: SQColor.secondary,));
-    topList.add(ContactInfo(name:"张羽嘉",tagIndex:"☆",bgColor: SQColor.secondary,));
-contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
-contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
-contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));
-    contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
-    contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
-    contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
-    contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
-    contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
-    contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
-    contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));
+    var resp=await Global.dio.get("/course/${widget.id}/plist");
+    var info= StuListResp.fromJson(json.decode(resp.data.toString()));
+    if(info.code!=0){
+      BotToast.showSimpleNotification(title: "网络错误");
+      return;
+    }
+    var data=info.data;
+    data.forEach((element) {
+      if(element.role!=Role.Student){
+        topList.add(ContactInfo(name:element.name,tagIndex:"☆",role: element.role,group: element.group,bgColor: Colors.orange,));
+      }
+      contactList.add(ContactInfo(name:element.name, role: element.role,group: element.group,bgColor: MyColors.ColormauveLight,));
+    });
+
+//     topList.add(ContactInfo(name:"张国平",tagIndex:"☆",bgColor: Colors.orange,));
+//     topList.add(ContactInfo(name:"李翔",tagIndex:"☆",bgColor: SQColor.secondary,));
+//     topList.add(ContactInfo(name:"张羽嘉",tagIndex:"☆",bgColor: SQColor.secondary,));
+// contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
+// contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
+// contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));
+//     contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
+//     contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
+//     contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
+//     contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
+//     contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));contactList.add(ContactInfo(name:"张国平", bgColor: Colors.orange,));
+//     contactList.add(ContactInfo(name:"李翔", bgColor: SQColor.secondary,));
+//     contactList.add(ContactInfo(name:"张羽嘉", bgColor: SQColor.secondary,));
 _handleList(contactList);
   }
   void _handleList(List<ContactInfo> list) {
@@ -124,13 +148,16 @@ contactList.insertAll(0, topList);
         // ),
         ListTile(
           leading: CircleAvatar(
-            backgroundColor: model.bgColor==null?Colors.blue[700]:model.bgColor,
+            backgroundColor: model.role!=Role.Student?Colors.orangeAccent:MyColors.Colormauve,
             child: Text(
               model.name[0],
               style: TextStyle(color: Colors.white),
             ),
           ),
           title: Text(model.name),
+          subtitle: Text(model.group),
+          trailing: model.role!=Role.Student?buildtag(model.role==Role.Monitor?"班长":"教师",MyColors.Colororange,Icons.stars_rounded):Container(width: 0,),
+
           onTap: () {
 
           },
@@ -164,6 +191,34 @@ contactList.insertAll(0, topList);
         color: color,
         borderRadius: BorderRadius.circular(20.0),
         border: Border.all(color: Colors.grey[300], width: .5));
+  }
+  Widget buildtag(String text, Color color, IconData icon) {
+    return Container(
+      width: 42,
+        margin: EdgeInsets.only(right: 5),
+        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+        decoration: BoxDecoration(
+          color: Color.fromARGB(99, color.red, color.green, color.blue),
+          border: Border.all(
+              color: Color.fromARGB(99, color.red, color.green, color.blue),
+              width: 0.5),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Row(children: [
+          Icon(
+            icon,
+            color: color,
+            size: 10,
+          ),
+          SizedBox(
+            width: 1,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+                fontSize: 10, color: color, fontWeight: FontWeight.bold),
+          ),
+        ]));
   }
   @override
   Widget build(BuildContext context) {

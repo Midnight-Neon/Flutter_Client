@@ -14,7 +14,8 @@ class ContactInfo extends ISuspensionBean {
   String img;
   String id;
   String firstletter;
-
+  String group;
+  int role=-1;
   ContactInfo({
      this.name,
     this.tagIndex,
@@ -23,6 +24,8 @@ class ContactInfo extends ISuspensionBean {
     this.iconData,
     this.img,
     this.id,
+   this.role,
+    this.group,
     this.firstletter,
   });
 
