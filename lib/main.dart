@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
       builder: BotToastInit(), //1.调用BotToastInit
       navigatorObservers: [BotToastNavigatorObserver()],
       navigatorKey: Routerkey.navigatorKey,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //

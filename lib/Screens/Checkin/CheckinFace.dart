@@ -129,12 +129,66 @@ class _CheckinFaceState extends State<CheckinFace> {
   }
 
   @override
-  void dispose() {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // App state changed before we got the chance to initialize.
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+    if (state == AppLifecycleState.inactive) {
+      cameraController?.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      if (cameraController != null) {
+        onNewCameraSelected(cameraController.description);
+      }
+    }
+  }
+  void onNewCameraSelected(CameraDescription cameraDescription) async {
+    if (cameraController != null) {
+      await cameraController.dispose();
+    }
+    cameraController = CameraController(
+      cameraDescription,
+      ResolutionPreset.medium,
+      enableAudio: false,
+    );
+
+    // If the controller is updated then update the UI.
+    cameraController.addListener(() {
+      if (mounted) setState(() {});
+      if (cameraController.value.hasError) {
+        // showInSnackBar('Camera error ${controller.value.errorDescription}');
+      }
+    });
+
+    try {
+      await cameraController.initialize();
+    } on CameraException catch (e) {
+      // _showCameraException(e);
+      print(e);
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() async{
     // TODO: implement dispose
-    // cameraController?.dispose();
+    super.dispose();
+
+    try {
+      await cameraController?.stopImageStream();
+
+    }catch(e){
+      print(e);
+    }
+    await cameraController?.dispose();
+
+
     // _interpreter?.close();
 
-    super.dispose();
+
   }
 // Load model
   void _loadModel() async {
@@ -213,6 +267,11 @@ class _CheckinFaceState extends State<CheckinFace> {
       print(_detections.length);
       if(_detections.length>0){
         // cameraController.takePicture();
+        try {
+          // await cameraController.stopImageStream();
+        }catch(e){
+          print(e);
+        }
         setState(() {
           _isUpload=true;
           _text="正在比对";
@@ -235,10 +294,22 @@ class _CheckinFaceState extends State<CheckinFace> {
 
        });
      }else{
+
        setState(() {
          _isUpload=false;
          _text="检测失败";
        });
+       // try {
+         // initCamera(cameraController.description);
+       //   cameraController.initialize();
+       //   setState(() {
+       //
+       //   });
+       //
+       //   await _onStream();
+       // }catch(e){
+       //   print(e);
+       // }
 
      }
 

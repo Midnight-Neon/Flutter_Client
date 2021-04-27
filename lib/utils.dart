@@ -1,3 +1,4 @@
+import 'package:classmanage/http.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,8 @@ void schemeJump(BuildContext context, String schemeUrl) {
     'classmanage://',
     'http://path/',
   ));
+  if(Global.profile!=null&&Global.profile.accessToken!=null)
+  return
   print(_jumpUri);
   switch (_jumpUri.path) {
     case '/cas':

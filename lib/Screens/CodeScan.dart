@@ -28,6 +28,13 @@ class _CodeScannerState extends State<CodeScanner> {
     }
     controller.resumeCamera();
   }
+  @override
+  void dispose()async {
+    // TODO: implement dispose
+   // await controller?.stopCamera();
+   controller?.dispose();
+   super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,10 +110,13 @@ class _CodeScannerState extends State<CodeScanner> {
           setState(() {
             result = null;
           });
+          this.controller.resumeCamera();
+
           return;
+
         }
         this.controller.resumeCamera();
-        this.controller.dispose();
+        // this.controller.dispose();
 
 
 
@@ -129,9 +139,19 @@ class _CodeScannerState extends State<CodeScanner> {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => CheckinFace(code: obj['code'],)));
             return;
+            break;
+          default:
+            this.controller.resumeCamera();
+            // print(e);
+            setState(() {
+              result = null;
+            });
+
         }
 
-      }catch(_){
+      }catch(e){
+        this.controller.resumeCamera();
+print(e);
         setState(() {
           result = null;
         });
