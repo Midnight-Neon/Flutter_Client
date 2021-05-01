@@ -21,13 +21,15 @@ import 'options_face.dart';
 
 class CheckinFace extends StatefulWidget {
   final String code;
+  final String ble;
 
-  const CheckinFace({Key key, this.code}) : super(key: key);
+  const CheckinFace({Key key, this.code, this.ble}) : super(key: key);
   @override
   _CheckinFaceState createState() => _CheckinFaceState();
 }
 
 class _CheckinFaceState extends State<CheckinFace> {
+
   CameraController cameraController;
   List cameras;
   int selectedCameraIndex;
@@ -280,6 +282,7 @@ class _CheckinFaceState extends State<CheckinFace> {
           "name": Global.profile.name,
           "uid": Global.profile.iD,
           "code":widget.code,
+          "ble":widget.ble,
           "file":  MultipartFile.fromBytes(img.encodePng(_image),filename: "photo.png" )
         });
       var resp= await Global.dio.post("/face",data: formData);

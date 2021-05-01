@@ -10,8 +10,8 @@ import '../../http.dart';
 
 class CheckinCode extends StatefulWidget {
  final String code;
-
-  const CheckinCode({Key key, this.code}) : super(key: key);
+final String ble;
+  const CheckinCode({Key key, this.code, this.ble}) : super(key: key);
   @override
   _CheckinCodeState createState() => _CheckinCodeState();
 }
@@ -26,7 +26,7 @@ class _CheckinCodeState extends State<CheckinCode> {
     });
   }
   submit()async{
-    var res= await Global.dio.post("/checkin",data: {"code":widget.code,"uid":Global.profile.iD,"type":2,"name":Global.profile.name,"num":text});
+    var res= await Global.dio.post("/checkin",data: {"code":widget.code,"uid":Global.profile.iD,"type":2,"name":Global.profile.name,"num":text,"ble":widget.ble});
     var data=  json.decode( res.data.toString());
     if(data['code']==0){
       BotToast.showSimpleNotification(title: "签到成功");

@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
+import 'BLE/bleSceen.dart';
 
 class UserCenter extends StatefulWidget {
   @override
@@ -171,6 +172,43 @@ class _UserCenterState extends State<UserCenter> {
                         ),
                         Text(
                           "退出登录",
+                          style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
+                        ),
+                        Spacer(),
+                        Icon(Icons.chevron_right)
+                      ],
+                    ),
+                  ))),
+          Card(
+              color: SQColor.lightGray,
+
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              elevation: 0,
+              margin: EdgeInsets.all(10),
+              child:GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: (){
+                    // BotToast.showSimpleNotification(title: "测试版不允许修改信息,请联系管理员");
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>BLEScreen()));
+
+                  },
+                  child: Container(
+                    height: 60,
+                    padding:
+                    EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
+                    child: Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.dot_radiowaves_left_right,
+                          size: 26,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "开发板配置",
                           style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
                         ),

@@ -19,7 +19,7 @@ String decodeBase64(String toDecode) {
   }
   return res;
 }
-const BASE_URL="http://192.168.43.180:5000";
+const BASE_URL="http://192.168.124.5:5000";
 class Global {
   static SharedPreferences _prefs;
   static Dio dio;

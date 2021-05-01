@@ -190,6 +190,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.11"
+  dropdown_search:
+    dependency: "direct main"
+    description:
+      name: dropdown_search
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.5.0"
   extended_image:
     dependency: transitive
     description:
@@ -237,6 +244,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_ble_lib:
+    dependency: "direct main"
+    description:
+      name: flutter_ble_lib
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.3.2"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -519,14 +533,14 @@ packages:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.1.1"
+    version: "7.1.0"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.2"
+    version: "3.3.0"
   petitparser:
     dependency: transitive
     description:
@@ -896,6 +910,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.1.0"
+  wifi_iot:
+    dependency: "direct main"
+    description:
+      name: wifi_iot
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.1"
   win32:
     dependency: transitive
     description:
