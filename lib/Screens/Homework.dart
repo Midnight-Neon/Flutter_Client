@@ -119,6 +119,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
       isDone=info.data.ans.length>0;
       isinPerson=info.data.ans.length>0?info.data.ans[0].inperson:false;
       ans=info.data.ans.length>0?info.data.ans[0]:null;
+      select_list=info.data.choices;
     });
     if(isDone){
       _publicController.text=info.data.ans[0].text;
@@ -175,8 +176,11 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                 itemCount: select_list.length,
                 itemBuilder: (context, index) {
                   return InkWell(
+
                     child: Card(
+                      // elevation: 1,
                       shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 0.1),
                           borderRadius:
                               BorderRadius.all(Radius.circular(15.0))),
                       child: Container(
@@ -205,7 +209,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                                 )),
                             Expanded(
                                 child: Container(
-                              padding: EdgeInsets.fromLTRB(30, 0, 10, 0),
+                              padding: EdgeInsets.fromLTRB(30, 5, 10, 0),
                               child: Text(
                                 select_list[index],
                                 style: TextStyle(fontSize: 13.0),
@@ -605,14 +609,15 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    select_list.clear();
-    select_list.add("选世界");
-    select_list.add("选桂言叶");
-    select_list.add("你们都是我的翅膀");
-    select_list.add("我是男酮");
-    select_list.add("告诉自己别睡了");
-    select_list.add(
-        "在这段时间里，我和你经历了很多，我看着你从当初那个懵懂无知的少女，变成了如今罗德岛的领导人，萨卡兹的王，但是我知道，凯尔希知道，所有干员都知道，你仍是那个温柔的小兔，无论你带上了什么样子面具，你都只能是你自己");
+    // select_list.clear();
+    // select_list.add("选世界");
+    // select_list.add("选桂言叶");
+    // select_list.add("你们都是我的翅膀");
+    // select_list.add("我是男酮");
+    // select_list.add("告诉自己别睡了");
+    // select_list.add(
+    //     "在这段时间里，我和你经历了很多，我看着你从当初那个懵懂无知的少女，变成了如今罗德岛的领导人，萨卡兹的王，但是我知道，凯尔希知道，所有干员都知道，你仍是那个温柔的小兔，无论你带上了什么样子面具，你都只能是你自己");
+    //
     _panelHeightOpen = MediaQuery.of(context).size.height * .80;
     _size = MediaQuery.of(context).size;
 
