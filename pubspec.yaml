@@ -62,7 +62,7 @@ dependencies:
   wifi_iot: ^0.3.1
   dropdown_search: ^0.5.0
   flutter_appcenter_bundle: ^3.3.1+2
-
+  jpush_flutter: ^2.0.5
 
 dependency_overrides:
   dio: ^3.0.10

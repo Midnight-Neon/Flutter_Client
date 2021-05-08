@@ -6,6 +6,9 @@ import 'package:classmanage/model/profile.dart';
 import 'package:classmanage/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:jpush_flutter/jpush_flutter.dart';
+
+import 'package:leancloud_storage/leancloud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 
@@ -21,14 +24,44 @@ String decodeBase64(String toDecode) {
   }
   return res;
 }
-const BASE_URL="http://192.168.43.180:5000";
+const BASE_URL="http://192.168.124.5:5000";
 class Global {
   static SharedPreferences _prefs;
   static Dio dio;
+  static JPush jpush;
   static Profile profile;
   static SharedPreferences getprefs()=>_prefs;
   static Future init() async {
     _prefs = await SharedPreferences.getInstance();
+    jpush=JPush();
+    jpush.setup(
+      appKey: "c6602febf6b1966918a53af9",
+      channel: "theChannel",
+      production: false,
+      debug: true, // 设置是否打印 debug 日志
+    );
+    jpush.addEventHandler(
+      // 接收通知回调方法。
+      onReceiveNotification: (Map<String, dynamic> message) async {
+        print("flutter onReceiveNotification: $message");
+      },
+      // 点击通知回调方法。
+      onOpenNotification: (Map<String, dynamic> message) async {
+        print("flutter onOpenNotification: $message");
+        message['cn.jpush.android.EXTRA']
+      },
+      // 接收自定义消息回调方法。
+      onReceiveMessage: (Map<String, dynamic> message) async {
+        print("flutter onReceiveMessage: $message");
+      },
+    );
+    if(profile!=null&&profile.accessToken!=null){
+      jpush.getRegistrationID().then((value) =>
+         dio.post("/push",data: {"pushID":value}));
+      jpush.setTags([Global.profile.iD,Global.profile.group,Global.profile.name,"Role${Global.profile.role}"]).then((value) => print("JPUSH Tags:$value"));
+
+    }
+
 
 
     var _profile = _prefs.getString("profile");
@@ -97,7 +130,10 @@ dio.clear();
       enableDistribute: false, // Defaults to false
       usePrivateDistributeTrack: false, // Defaults to false
       disableAutomaticCheckForUpdate: false, // Defaults to false
-    )
+    );
+
+
+    print(await AppCenter.getInstallIdAsync());
     await initializeDateFormatting();
 
 
