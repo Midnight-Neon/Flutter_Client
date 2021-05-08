@@ -53,7 +53,7 @@ class HomeworkScreen extends StatefulWidget {
 }
 
 class _HomeworkScreenState extends State<HomeworkScreen> {
-  int Wb_Select = -1;
+  List<int> Wb_Select = [];
   List<String> select_list = [];
   bool ischoseque = false;
   bool isDone=false;
@@ -63,7 +63,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
 
   submitHomework()async{
     var text=_publicController.text;
-    if((ischoseque&&text.length==0)||(!ischoseque&&Wb_Select==-1)){
+    if((ischoseque&&text.length==0)||(!ischoseque&&Wb_Select==[])){
       BotToast.showSimpleNotification(title: "未填写内容");
       return;
     }
@@ -83,7 +83,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
     BotToast.closeAllLoading();
     var resp= await Global.dio.post("/course/${widget.cid}/homework/${widget.id}",data:{'text':text,
         'pics':pics,
-        'inperson':isinPerson,"choice":ischoseque?Wb_Select:-1});
+        'inperson':isinPerson,"choice":ischoseque?Wb_Select:[]});
     var res=json.decode(resp.data.toString());
     if(res['code']==0){
       BotToast.showSimpleNotification(title: "提交成功");
@@ -217,7 +217,7 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                             )),
                             Container(
                                 padding: EdgeInsets.only(right: 10.0),
-                                child: (Wb_Select == index)
+                                child: (Wb_Select.contains(index))
                                     ? Icon(Icons.check_circle_rounded)
                                     : SizedBox(width: 28.0))
                           ],
@@ -225,8 +225,10 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
                       ),
                     ),
                     onTap: () {
+                      if(Wb_Select.contains(index))
+                        return;
                       setState(() {
-                        Wb_Select = index;
+                        Wb_Select.add(index);
                       });
                       print(index);
                     },
