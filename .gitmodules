@@ -4,3 +4,4 @@
 [submodule "lib/tflite_flutter_helper"]
 	path = lib/tflite_flutter_helper
 	url = https://github.com/Midnight-Neon/tflite_flutter_helper
+
