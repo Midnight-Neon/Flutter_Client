@@ -13,6 +13,7 @@ import 'package:classmanage/http.dart';
 import 'package:classmanage/model/CourseInfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ClassIndex extends StatefulWidget {
@@ -60,11 +61,15 @@ getInfo();
        }
      });
      if(notifynum!=0)   entry.add(buildEntry(notifynum.toString(),"条","待确认","通知",MyColors.Colormauve,"comment_fill"));
-
+     AppCenter.trackEventAsync('my event', <String, String> {
+       'prop1': 'prop1',
+       'prop2': 'prop2',
+     });
    }
    setState(() {
 
    });
+
 
 
   }

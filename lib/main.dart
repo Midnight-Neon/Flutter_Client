@@ -8,9 +8,11 @@ import 'package:classmanage/Screens/CodeScan.dart';
 import 'package:classmanage/Screens/UserCenter.dart';
 import 'package:classmanage/Screens/Welcome/welcome_screen.dart';
 import 'package:classmanage/components/NavigatorItem.dart';
+import 'package:classmanage/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:uni_links/uni_links.dart';
 
 import 'Screens/Course/CourseItem.dart';
@@ -106,7 +108,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     initPlatformState();
   }
-
   @override
   void dispose() {
     super.dispose();

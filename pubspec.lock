@@ -244,6 +244,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_appcenter_bundle:
+    dependency: "direct main"
+    description:
+      name: flutter_appcenter_bundle
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.3.1+2"
   flutter_ble_lib:
     dependency: "direct main"
     description:
@@ -352,6 +359,13 @@ packages:
       url: "https://pub.flutter-io.cn/"
     source: hosted
     version: "0.17.0"
+  jpush_flutter:
+    dependency: "direct main"
+    description:
+      name: jpush_flutter
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.5"
   js:
     dependency: transitive
     description:

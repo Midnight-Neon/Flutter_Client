@@ -53,5 +53,14 @@ class Role {
   static const int Teacher = -1;
   static const int Student =0;
   static const int Monitor =1;
+  static String getRole(int i){
+    switch(i){
+      case -1:
+        return "Teacher";
+        break;
+      case 0:return "Student";break;
+      case 1 :return "Monitor";break;
+    }
+  }
 
 }
