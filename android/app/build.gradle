@@ -55,7 +55,6 @@ android {
 flutter {
     source '../..'
 }
-lintOptions { checkReleaseBuilds false }
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
