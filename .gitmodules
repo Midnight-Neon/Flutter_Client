@@ -4,6 +4,3 @@
 [submodule "lib/tflite_flutter_helper"]
 	path = lib/tflite_flutter_helper
 	url = https://github.com/Midnight-Neon/tflite_flutter_helper
-[submodule "lib/Storage-SDK-Flutter"]
-	path = lib/Storage-SDK-Flutter
-	url = https://github.com/Midnight-Neon/Storage-SDK-Flutter
