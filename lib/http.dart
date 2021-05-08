@@ -7,6 +7,8 @@ import 'package:classmanage/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
+
 String decodeBase64(String toDecode) {
   String res;
   try {
@@ -86,6 +88,16 @@ dio.clear();
 
         }
       ));
+
+    await AppCenter.startAsync(
+      appSecretAndroid: '8ab9259a-ec78-477d-b868-30a1e79d55ea',
+      appSecretIOS: '8ab9259a-ec78-477d-b868-30a1e79d55ea',
+      enableAnalytics: true, // Defaults to true
+      enableCrashes: true, // Defaults to true
+      enableDistribute: false, // Defaults to false
+      usePrivateDistributeTrack: false, // Defaults to false
+      disableAutomaticCheckForUpdate: false, // Defaults to false
+    )
     await initializeDateFormatting();
 
 

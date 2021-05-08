@@ -61,6 +61,7 @@ dependencies:
   flutter_ble_lib: any
   wifi_iot: ^0.3.1
   dropdown_search: ^0.5.0
+  flutter_appcenter_bundle: ^3.3.1+2
 
 
 dependency_overrides:
