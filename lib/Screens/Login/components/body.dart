@@ -62,7 +62,8 @@ if(res.code!=0){
   Global.getprefs().setString("profile", json.encode(res.data));
   BotToast.closeAllLoading();
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyHomePage()));
-}} catch (e, stack) { 
+}} catch (e, stack) {
+  print(e);
   BotToast.closeAllLoading();
   BotToast.showSimpleNotification(title: "登录失败");
 
