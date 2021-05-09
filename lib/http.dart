@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:classmanage/Screens/Homework.dart';
+import 'package:classmanage/Screens/Homework/HomeworkLists.dart';
+import 'package:classmanage/Screens/Notifications/Notification.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:classmanage/main.dart';
@@ -7,8 +10,7 @@ import 'package:classmanage/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
-
-import 'package:leancloud_storage/leancloud.dart';
+import 'package:classmanage/model/push.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 
@@ -24,7 +26,7 @@ String decodeBase64(String toDecode) {
   }
   return res;
 }
-const BASE_URL="https://alsworld.xyz/api";
+const BASE_URL="http://192.168.124.5:5000";
 class Global {
   static SharedPreferences _prefs;
   static Dio dio;
@@ -48,7 +50,28 @@ class Global {
       // 点击通知回调方法。
       onOpenNotification: (Map<String, dynamic> message) async {
         print("flutter onOpenNotification: $message");
-        message['cn.jpush.android.EXTRA'];
+        var estr=message['extras']['cn.jpush.android.EXTRA'];
+        var extra=pushModel.fromJson(json.decode(estr));
+        switch (extra.type) {
+          case 0:
+            {
+             await Routerkey.navigatorKey.currentState.push(MaterialPageRoute(
+                  builder: (context) => HomeworkList(id: extra.cid,)));
+            }break;
+          case 1:
+            {
+              await Routerkey.navigatorKey.currentState.push(MaterialPageRoute(
+                  builder: (context) => NotificationSceen(id: extra.cid,)));
+            }break;
+          case 2:
+            {
+              await Routerkey.navigatorKey.currentState.push(MaterialPageRoute(
+                  builder: (context) => HomeworkScreen(cid: extra.cid,id: extra.id,)));
+            }break;
+        }
+
+
+
       },
       // 接收自定义消息回调方法。
       onReceiveMessage: (Map<String, dynamic> message) async {
