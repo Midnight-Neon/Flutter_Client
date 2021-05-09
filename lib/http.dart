@@ -24,7 +24,7 @@ String decodeBase64(String toDecode) {
   }
   return res;
 }
-const BASE_URL="http://192.168.124.5:5000";
+const BASE_URL="https://alsworld.xyz/api";
 class Global {
   static SharedPreferences _prefs;
   static Dio dio;
