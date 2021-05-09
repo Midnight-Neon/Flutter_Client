@@ -48,7 +48,7 @@ class Global {
       // 点击通知回调方法。
       onOpenNotification: (Map<String, dynamic> message) async {
         print("flutter onOpenNotification: $message");
-        message['cn.jpush.android.EXTRA']
+        message['cn.jpush.android.EXTRA'];
       },
       // 接收自定义消息回调方法。
       onReceiveMessage: (Map<String, dynamic> message) async {
