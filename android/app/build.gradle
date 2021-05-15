@@ -31,6 +31,10 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
     flavorDimensions "distribute"
     productFlavors {
         appCenter {
@@ -51,7 +55,10 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        lintOptions { checkReleaseBuilds false }
+        lintOptions {
+            disable 'InvalidPackage'
+            checkReleaseBuilds false
+        }
         ndk {
             //选择要添加的对应 cpu 类型的 .so 库。
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'

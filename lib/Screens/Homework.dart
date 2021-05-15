@@ -4,7 +4,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:classmanage/components/StarRate.dart';
 import 'package:classmanage/components/Tags.dart';
+import 'package:classmanage/components/watermark.dart';
 import 'package:classmanage/model/HomeworkInfoResp.dart';
+import 'package:disable_screenshots/disable_screenshots.dart';
 import 'package:leancloud_storage/leancloud.dart';
 import 'package:classmanage/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,6 +55,9 @@ class HomeworkScreen extends StatefulWidget {
 }
 
 class _HomeworkScreenState extends State<HomeworkScreen> {
+  DisableScreenshots _plugin = DisableScreenshots();
+  OverlayEntry _overlay;
+
   List<int> Wb_Select = [];
   List<String> select_list = [];
   bool ischoseque = false;
@@ -99,19 +104,54 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
     var file=await  LCFile.fromBytes(title, data).save();
     return file.url;
   }
+  initWaterMark(){
+    _overlay = OverlayEntry(
+        builder: (context) => Watarmark(
+          rowCount: 3,
+          columnCount: 8,
+          text: Global.profile.iD,
+          textStyle:
+              const TextStyle(
+
+                  color: Color(0x02000000),
+                  fontSize: 18,
+                  decoration: TextDecoration.none),
+        ));
+setState(() {
+
+});
+  }
   @override
   void initState() {
     super.initState();
+
+    if(_overlay!=null){
+      _overlay.remove();
+    }
+    initWaterMark();
     updateHomework();
+
+
   }
+
+  @override
+  void dispose() {
+    _overlay.remove();
+    super.dispose();
+  }
+
   updateHomework() async{
     var resp=await Global.dio.get("/course/${widget.cid}/homework/${widget.id}");
     // print(resp.data.toString());
     var info= HomeworkInfoResp.fromJson(json.decode(resp.data.toString()));
+
     if(info.code!=0){
       BotToast.showSimpleNotification(title: "网络错误");
       return;
     }
+
+    OverlayState overlayState = Overlay.of(context);
+    overlayState.insert(_overlay);
     // print(info.data.ans);
     setState(() {
       this.info=info.data;

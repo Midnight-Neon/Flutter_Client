@@ -63,6 +63,8 @@ dependencies:
   dropdown_search: ^0.5.0
   flutter_appcenter_bundle: ^3.3.1+2
   jpush_flutter: ^2.0.5
+  disable_screenshots: 0.0.1 #latest version
+
 
 dependency_overrides:
   dio: ^3.0.10
