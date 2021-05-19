@@ -64,7 +64,7 @@ dependencies:
   flutter_appcenter_bundle: ^3.3.1+2
   jpush_flutter: ^2.0.5
   disable_screenshots: 0.0.1 #latest version
-
+  web_socket_channel: ^2.1.0
 
 dependency_overrides:
   dio: ^3.0.10
