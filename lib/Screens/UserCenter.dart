@@ -1,4 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:classmanage/Screens/games/GameScreen.dart';
 import 'package:classmanage/components/Tags.dart';
 import 'package:classmanage/http.dart';
 import 'package:classmanage/main.dart';
@@ -227,7 +228,7 @@ class _UserCenterState extends State<UserCenter> {
                   behavior: HitTestBehavior.opaque,
                   onTap: (){
                     // BotToast.showSimpleNotification(title: "测试版不允许修改信息,请联系管理员");
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>BLEScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>GameScreen()));
 
                   },
                   child: Container(
