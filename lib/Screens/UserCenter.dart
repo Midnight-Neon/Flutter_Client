@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
 import 'BLE/bleSceen.dart';
+import 'games/GameStart.dart';
 
 class UserCenter extends StatefulWidget {
   @override
@@ -228,7 +229,7 @@ class _UserCenterState extends State<UserCenter> {
                   behavior: HitTestBehavior.opaque,
                   onTap: (){
                     // BotToast.showSimpleNotification(title: "测试版不允许修改信息,请联系管理员");
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>GameScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>GameStart()));
 
                   },
                   child: Container(
