@@ -9,7 +9,8 @@ set -e
 set -x
 
 cd ..
-git clone -b beta https://github.com/flutter/flutter.git
+curl -O https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_2.0.2-stable.zip
+unzip -d flutter flutter_macos_2.0.2-stable.zip
 export PATH=`pwd`/flutter/bin:$PATH
 
 flutter channel stable
