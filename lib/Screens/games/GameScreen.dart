@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:web_socket_channel/io.dart';
 
+import 'GaneResult.dart';
+
 class GameScreen extends StatefulWidget {
   final String id;
   final int pos;
@@ -41,7 +43,7 @@ int flag=0;
     getList();
   }
   getList()async{
-    var resp=await Global.dio.get("http://192.168.43.180:8000/word/${widget.id}");
+    var resp=await Global.dio.get("http://192.168.124.5:8000/word/${widget.id}");
    var wlists= WordResp.fromJson(resp.data);
    setState(() {
      wlist=wlists.data;
@@ -179,7 +181,7 @@ int flag=0;
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Wrap(alignment:WrapAlignment.center, children: [
                   for (var x in charList)
                     Padding(
                         padding: EdgeInsets.only(left: 0.5, right: 0.5),
@@ -278,10 +280,20 @@ int flag=0;
               });
               });
               if(quenum==wlist.length){
-                Navigator.pop(context);
-                return;
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (c)=>GameResult()));
               }
               getnullqus();
+            }else{
+              flag=-1;
+              setState(() {
+
+              });
+              Future.delayed(Duration(seconds: 2,),(){
+                setState(() {
+                  flag=0;
+
+                });
+              });
             }
           }
 
