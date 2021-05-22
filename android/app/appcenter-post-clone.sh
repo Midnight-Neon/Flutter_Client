@@ -10,7 +10,7 @@ set -x
 
 cd ..
 curl -O https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_2.0.2-stable.zip
-unzip -d flutter flutter_macos_2.0.2-stable.zip
+unzip -q flutter_macos_2.0.2-stable.zip
 export PATH=`pwd`/flutter/bin:$PATH
 
 flutter channel stable
