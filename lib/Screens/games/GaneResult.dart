@@ -39,8 +39,9 @@ class GameResult extends StatelessWidget {
         ),
         body: SafeArea(
           child: SizedBox.expand(child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: [
-            flag==0?  Lottie.asset("assets/images/loser.json",width: 200,height: 350,):
-              Image.asset("assets/images/winner.gif",width: 200,height: 350,),
+            flag==0?  Image.asset("assets/images/loser.webp",width: 200,height: 350,):
+            // Lottie.asset("assets/images/winner.json",width: 200,height: 350,),
+              Image.asset("assets/images/winner.webp",width: 200,height: 350,),
              Text(flag==0?"A Stone's Throw":"You Win",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),),
 
               SizedBox(height: 60,),RoundedButton(text:"退出",press: ()=>{Navigator.pop(context)},),
