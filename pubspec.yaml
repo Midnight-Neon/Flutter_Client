@@ -65,7 +65,7 @@ dependencies:
   jpush_flutter: 2.0.5
   disable_screenshots: 0.0.1 #latest version
   web_socket_channel: ^2.1.0
-
+  lottie: ^1.0.1
 dependency_overrides:
   dio: ^3.0.10
   http_parser : 4.0.0

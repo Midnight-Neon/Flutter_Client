@@ -32,12 +32,12 @@ class _GameStartState extends State<GameStart> {
     initWebsocket();
   }
 initWebsocket() async{
-   var resp=await Global.dio.get("http://192.168.124.5:8000/words");
+   var resp=await Global.dio.get("http://192.168.43.180:8000/words");
    var res=resp.data;
    // if(res['code']==0){
      CId=res['data'];
      pos=res['pos'];
-     _channel=IOWebSocketChannel.connect("ws://192.168.124.5:8000/ws/$CId/${pos}");
+     _channel=IOWebSocketChannel.connect("ws://192.168.43.180:8000/ws/$CId/${pos}");
 
      _channel.stream.listen((event) {
        print(event);
@@ -88,7 +88,7 @@ print(isReady);
         body: SafeArea(
             child: SizedBox.expand(child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: [
               SvgPicture.asset("assets/images/Games_Head.svg",width: 300,height: 300,),
-              SizedBox(height: 60,),isReady?RoundedButton(text:"开始游戏",press: ()=>{                    Navigator.push(context, MaterialPageRoute(builder: (context)=>GameScreen(id: CId,pos: pos,channel: _channel,)))
+              SizedBox(height: 60,),isReady?RoundedButton(text:"开始游戏",press: ()=>{                    Navigator.push(context, MaterialPageRoute(builder: (context)=>GameScreen(id: CId,pos: pos,channel: _channel,))).then((value) => Navigator.pop(context))
               },):Row(mainAxisAlignment: MainAxisAlignment.center,children: [SizedBox(height: 40,width: 40,child: Ring2InsideLoading(color: MyColors.Colorgray,),)],),
               SizedBox(height: 20,),
               // Text.rich( TextSpan(text:"在配网之前,请确保:\n\t本机蓝牙已打开.\n\t可以扫描到",style: TextStyle(fontSize: 15,),children: [TextSpan(text: "BLE Init",style: TextStyle(fontWeight: FontWeight.bold)),TextSpan(text: "设备.")])),

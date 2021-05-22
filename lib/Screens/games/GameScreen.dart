@@ -7,6 +7,7 @@ import 'package:classmanage/http.dart';
 import 'package:classmanage/model/word.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:web_socket_channel/io.dart';
 
 class GameScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _GameScreenState extends State<GameScreen> {
   List<String> charList = [];
   int currentIndex=0;
   String alphabet = 'wertyuioasdfghlxcvbnm';
-
+int flag=0;
   @override
   void initState() {
     // TODO: implement initState
@@ -40,7 +41,7 @@ class _GameScreenState extends State<GameScreen> {
     getList();
   }
   getList()async{
-    var resp=await Global.dio.get("http://192.168.124.5:8000/word/${widget.id}");
+    var resp=await Global.dio.get("http://192.168.43.180:8000/word/${widget.id}");
    var wlists= WordResp.fromJson(resp.data);
    setState(() {
      wlist=wlists.data;
@@ -170,11 +171,11 @@ class _GameScreenState extends State<GameScreen> {
       child: wlist.length>0?Column(
         children: [
           Text(
-            "剩余题目：" + quenum.toString(),
+            "剩余题目：" + (9-quenum).toString(),
             style: TextStyle(fontSize: 20, color: Colors.black38),
           ),
           Container(
-            padding: EdgeInsets.only(top: 100, bottom: 100),
+            padding: EdgeInsets.only(top: 100, bottom: 10),
             alignment: Alignment.topCenter,
             child: Column(
               children: [
@@ -219,7 +220,18 @@ class _GameScreenState extends State<GameScreen> {
               ],
             ),
           ),
-          Spacer(),
+          
+          Expanded(child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              // Spacer(),
+              if(flag==1)
+              Lottie.asset("assets/images/14584-well-done.json",repeat: false,width: 250,height: 200)
+              else if(flag==-1)
+                Lottie.asset("assets/images/62484-error-mark.json",repeat: false,width: 250,height: 200)
+
+            ],
+          )),
           Container(
             alignment: Alignment.center,
             child: get_ans(),
@@ -255,8 +267,15 @@ class _GameScreenState extends State<GameScreen> {
             print(res);
             if(res==wlist[quenum].word){
               quenum++;
+              flag=1;
               setState(() {
 
+              });
+              Future.delayed(Duration(seconds: 2,),(){
+              setState(() {
+                flag=0;
+
+              });
               });
               if(quenum==wlist.length){
                 Navigator.pop(context);
